@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin - Gestión de Productos</title>
+    <link rel="stylesheet" href="../assets/css/styles.css">
+    <link rel="stylesheet" href="../assets/css/components.css">
+    <link rel="stylesheet" href="../assets/css/admin.css">
+</head>
+<body style="background-color: #eee;">
+
+    <div class="admin-layout">
+        <aside class="admin-sidebar">
+            <h3 style="color: white; text-align: center;">Panel Admin</h3>
+            <ul class="sidebar-menu">
+                <li><a href="index.html" class="sidebar-item">Dashboard</a></li>
+                <li><a href="productos-mgr.html" class="sidebar-item">Productos</a></li>
+                <li><a href="usuarios-mgr.html" class="sidebar-item">Usuarios</a></li>
+                <li><a href="../public/index.html" class="sidebar-item">Ir a la Tienda</a></li>
+                <li><a href="../public/login.html" class="sidebar-item" style="color: red;">Cerrar Sesión</a></li>
+            </ul>
+        </aside>
+
+        <main class="admin-main">
+            <h2>Gestión de Productos</h2>
+
+            <div class="card" style="width: 100%; text-align: left; margin-bottom: 30px;">
+                <h3>Agregar Nuevo Producto / Servicio</h3>
+                <form id="productForm" style="display: flex; flex-wrap: wrap; gap: 10px;">
+                    <div class="form-group">
+                        <label>Código (Min 3):</label>
+                        <input type="text" id="pCodigo" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Nombre (Máx 100):</label>
+                        <input type="text" id="pNombre" class="form-control" maxlength="100" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Categoría:</label>
+                        <select id="pCat" class="form-control">
+                            <option>Cortes</option>
+                            <option>Barba</option>
+                            <option>Facial</option>
+                            <option>Productos</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Precio:</label>
+                        <input type="number" id="pPrecio" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Stock:</label>
+                        <input type="number" id="pStock" class="form-control" required>
+                    </div>
+                    <div class="form-group" style="width: 100%;">
+                        <label>Descripción (Máx 500):</label>
+                        <textarea id="pDesc" class="form-control" rows="3" maxlength="500"></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Guardar Producto</button>
+                </form>
+            </div>
+
+            <h3>Listado de Productos</h3>
+            <table class="data-table">
+                <thead style="background-color: #ddd;">
+                    <tr style="text-align: left;">
+                        <th>Código</th>
+                        <th>Nombre</th>
+                        <th>Categoría</th>
+                        <th>Precio</th>
+                        <th>Stock</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody id="tablaProductos">
+                    <!-- Cargado desde admin.js -->
+                </tbody>
+            </table>
+        </main>
+    </div>
+
+    <script src="../assets/js/validations.js"></script>
+    <script src="../assets/js/admin.js"></script>
+</body>
+</html>

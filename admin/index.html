@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin - Dashboard</title>
+    <link rel="stylesheet" href="../assets/css/styles.css">
+    <link rel="stylesheet" href="../assets/css/components.css">
+    <link rel="stylesheet" href="../assets/css/admin.css">
+</head>
+<body style="background-color: #eee;">
+
+    <div class="admin-layout">
+        <aside class="admin-sidebar">
+            <h3 style="color: white; text-align: center;">Panel Admin</h3>
+            <ul class="sidebar-menu">
+                <li><a href="index.html" class="sidebar-item">Dashboard</a></li>
+                <li><a href="productos-mgr.html" class="sidebar-item">Productos</a></li>
+                <li><a href="usuarios-mgr.html" class="sidebar-item">Usuarios</a></li>
+                <li><a href="../public/index.html" class="sidebar-item">Ir a la Tienda</a></li>
+                <li><a href="../public/login.html" class="sidebar-item" style="color: red;">Cerrar Sesión</a></li>
+            </ul>
+        </aside>
+
+        <main class="admin-main">
+            <h2>Dashboard de Administración</h2>
+            <p>Bienvenido al panel de control de la Barbería Elegance.</p>
+            <hr>
+            <div style="display: flex; gap: 20px; margin-top: 20px;">
+                <div class="card">
+                    <h4>Total Productos</h4>
+                    <p style="font-size: 2rem;">6</p>
+                </div>
+                <div class="card">
+                    <h4>Total Usuarios</h4>
+                    <p style="font-size: 2rem;">3</p>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="../assets/js/admin.js"></script>
+</body>
+</html>

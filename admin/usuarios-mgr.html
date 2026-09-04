@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin - Gestión de Usuarios</title>
+    <link rel="stylesheet" href="../assets/css/styles.css">
+    <link rel="stylesheet" href="../assets/css/components.css">
+    <link rel="stylesheet" href="../assets/css/admin.css">
+</head>
+<body style="background-color: #eee;">
+
+    <div class="admin-layout">
+        <aside class="admin-sidebar">
+            <h3 style="color: white; text-align: center;">Panel Admin</h3>
+            <ul class="sidebar-menu">
+                <li><a href="index.html" class="sidebar-item">Dashboard</a></li>
+                <li><a href="productos-mgr.html" class="sidebar-item">Productos</a></li>
+                <li><a href="usuarios-mgr.html" class="sidebar-item">Usuarios</a></li>
+                <li><a href="../public/index.html" class="sidebar-item">Ir a la Tienda</a></li>
+                <li><a href="../public/login.html" class="sidebar-item" style="color: red;">Cerrar Sesión</a></li>
+            </ul>
+        </aside>
+
+        <main class="admin-main">
+            <h2>Gestión de Usuarios</h2>
+
+            <div class="card" style="width: 100%; text-align: left; margin-bottom: 30px;">
+                <h3>Agregar Nuevo Usuario</h3>
+                <form id="userForm" style="display: flex; flex-wrap: wrap; gap: 10px;">
+                    <div class="form-group">
+                        <label>RUN (7-9 dígitos, sin puntos ni guiones):</label>
+                        <input type="text" id="uRun" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Nombre (Máx 50):</label>
+                        <input type="text" id="uNombre" class="form-control" maxlength="50" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Apellidos (Máx 100):</label>
+                        <input type="text" id="uApellidos" class="form-control" maxlength="100" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Correo:</label>
+                        <input type="email" id="uCorreo" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Rol:</label>
+                        <select id="uRol" class="form-control">
+                            <option>Administrador</option>
+                            <option>Vendedor</option>
+                            <option>Cliente</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Dirección (Máx 300):</label>
+                        <input type="text" id="uDireccion" class="form-control" maxlength="300" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Guardar Usuario</button>
+                </form>
+            </div>
+
+            <h3>Listado de Usuarios</h3>
+            <table class="data-table">
+                <thead style="background-color: #ddd;">
+                    <tr style="text-align: left;">
+                        <th>RUN</th>
+                        <th>Nombre</th>
+                        <th>Apellidos</th>
+                        <th>Correo</th>
+                        <th>Rol</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody id="tablaUsuarios">
+                    <!-- Cargado desde admin.js -->
+                </tbody>
+            </table>
+        </main>
+    </div>
+
+    <script src="../assets/js/validations.js"></script>
+    <script src="../assets/js/admin.js"></script>
+</body>
+</html>

@@ -1,0 +1,65 @@
+/*
+   VALIDACIONES.JS
+   Este archivo contiene todas las reglas de validación
+   estrictas según la pauta de la evaluación.
+*/
+
+// --- VALIDACIONES DE AUTENTICACIÓN ---
+
+function validarCorreo(correo) {
+    // El PDF pide que termine en @duoc.cl, @profesor.duoc.cl o @gmail.com
+    var regex = /(@duoc\.cl|@profesor\.duoc\.cl|@gmail\.com)$/;
+    return regex.test(correo);
+}
+
+function validarPassword(password) {
+    // Longitud entre 4 y 10 caracteres
+    return password.length >= 4 && password.length <= 10;
+}
+
+// --- VALIDACIONES DE ADMIN (USUARIOS) ---
+
+function validarRUN(run) {
+    // RUN: 7 a 9 dígitos, estrictamente sin puntos ni guiones
+    var regex = /^[0-9]{7,9}$/;
+    return regex.test(run);
+}
+
+function validarNombreUsuario(nombre) {
+    // Nombre: Máximo 50 caracteres
+    return nombre.length <= 50;
+}
+
+function validarApellidosUsuario(apellidos) {
+    // Apellidos: Máximo 100 caracteres
+    return apellidos.length <= 100;
+}
+
+function validarDireccionUsuario(direccion) {
+    // Dirección: Máximo 300 caracteres
+    return direccion.length <= 300;
+}
+
+// --- VALIDACIONES DE ADMIN (PRODUCTOS) ---
+
+function validarNombreProducto(nombre) {
+    // Nombre Producto: Máximo 100 caracteres
+    return nombre.length <= 100;
+}
+
+function validarDescProducto(desc) {
+    // Descripción Producto: Máximo 500 caracteres
+    return desc.length <= 500;
+}
+
+// --- VALIDACIONES DE CONTACTO ---
+
+function validarNombreContacto(nombre) {
+    // Nombre Contacto: Máximo 100 caracteres
+    return nombre.length <= 100;
+}
+
+function validarComentarioContacto(texto) {
+    // Comentario: Máximo 500 caracteres
+    return texto.length <= 500;
+}

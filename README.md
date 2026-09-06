@@ -66,6 +66,7 @@ Dado que el proyecto utiliza tecnologías frontend y `localStorage`, no requiere
 
 **Desarrolladores:**
 - Alexander Heredia
-- VooNn47
+- Bastian Canales
+- Ian Muñoz
 
 **Desarrollado para la Evaluación Parcial 1 - DSY1104**

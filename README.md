@@ -9,6 +9,7 @@ Este proyecto es una aplicación web desarrollada para la evaluación del curso 
 - **Catálogo de Servicios:** Visualización de productos y servicios organizados por categorías y precios.
 - **Detalle de Producto:** Información detallada de cada servicio.
 - **Carrito de Compras:** Gestión de productos seleccionados con persistencia de datos.
+- **Blog:** Sección informativa con artículos y detalles sobre tendencias y cuidado personal.
 - **Formulario de Contacto:** Envío de mensajes con validaciones de longitud de texto.
 
 ### Para el Administrador / Vendedor
@@ -31,13 +32,23 @@ Este proyecto es una aplicación web desarrollada para la evaluación del curso 
 │   ├── productos-mgr.html # Gestión de productos
 │   └── usuarios-mgr.html   # Gestión de usuarios
 ├── assets/                # Recursos estáticos
-│   └── js/                # Lógica de JavaScript (auth.js, cart.js, admin.js)
+│   ├── css/               # Estilos globales y específicos (admin.css, styles.css)
+│   ├── img/               # Imágenes de productos y blog
+│   └── js/                # Lógica de JavaScript (auth.js, cart.js, store.js, admin.js)
+├── documentoss/           # Documentación técnica del proyecto
+│   ├── ERS.docx           # Especificación de Requisitos de Software
+│   └── Matriz.docx        # Matriz de Requerimientos
 ├── public/                # Páginas accesibles al público
 │   ├── index.html         # Página de inicio
 │   ├── productos.html      # Catálogo
+│   ├── producto-detalle.html # Detalle de servicio
 │   ├── carrito.html       # Vista del carrito
 │   ├── login.html         # Acceso de usuarios
-│   └── registro.html       # Creación de cuentas
+│   ├── registro.html       # Creación de cuentas
+│   ├── contacto.html       # Formulario de contacto
+│   ├── nosotros.html       # Información de la barbería
+│   ├── blog.html          # Listado de artículos del blog
+│   └── blog-detalle.html   # Detalle de artículo del blog
 └── README.md              # Documentación del proyecto
 ```
 
@@ -52,4 +63,9 @@ Dado que el proyecto utiliza tecnologías frontend y `localStorage`, no requiere
 2. Abrir el archivo `public/index.html` en cualquier navegador moderno.
 
 ---
+
+**Desarrolladores:**
+- Alexander Heredia
+- VooNn47
+
 **Desarrollado para la Evaluación Parcial 1 - DSY1104**

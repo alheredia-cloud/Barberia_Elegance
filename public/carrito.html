@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Barbería Elegance - Carrito</title>
+    <link rel="stylesheet" href="../assets/css/styles.css">
+    <link rel="stylesheet" href="../assets/css/components.css">
+</head>
+<body>
+
+    <nav>
+        <a href="index.html">Inicio</a>
+        <a href="productos.html">Servicios</a>
+        <a href="nosotros.html">Nosotros</a>
+        <a href="blog.html">Blog</a>
+        <a href="contacto.html">Contacto</a>
+        <a href="login.html">Login</a>
+        <a href="carrito.html">Carrito (<span id="cart-count">0</span>)</a>
+    </nav>
+
+    <div class="container">
+        <h2>Mi Carrito de Compras</h2>
+        <table class="data-table" style="width: 100%; border-collapse: collapse; margin-bottom: 20px;">
+            <thead style="background-color: #ddd;">
+                <tr style="text-align: left;">
+                    <th>Servicio</th>
+                    <th>Cantidad</th>
+                    <th>Precio</th>
+                    <th>Subtotal</th>
+                    <th>Acción</th>
+                </tr>
+            </thead>
+            <tbody id="carrito-items">
+                <!-- Items cargados desde localStorage -->
+            </tbody>
+        </table>
+        <div style="text-align: right;">
+            <p><strong>Total: <span id="total">$0</span></strong></p>
+            <button class="btn btn-primary">Finalizar Compra</button>
+            <a href="productos.html" class="btn btn-outline">Seguir Comprando</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2026 Barbería Elegance - Trabajo de Evaluación Fullstack</p>
+    </footer>
+
+    <script src="../assets/js/cart.js"></script>
+</body>
+</html>

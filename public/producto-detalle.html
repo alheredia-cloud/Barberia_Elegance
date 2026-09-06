@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Barbería Elegance - Detalle</title>
+    <link rel="stylesheet" href="../assets/css/styles.css">
+    <link rel="stylesheet" href="../assets/css/components.css">
+</head>
+<body>
+
+    <nav>
+        <a href="index.html">Inicio</a>
+        <a href="productos.html">Servicios</a>
+        <a href="nosotros.html">Nosotros</a>
+        <a href="blog.html">Blog</a>
+        <a href="contacto.html">Contacto</a>
+        <a href="login.html">Login</a>
+        <a href="carrito.html">Carrito (<span id="cart-count">0</span>)</a>
+    </nav>
+
+    <div class="container">
+        <div style="display: flex; gap: 30px; align-items: center;">
+            <div style="flex: 1; height: 300px; background-color: #ddd; border: 1px solid #ccc; text-align: center; line-height: 300px;">
+                [Foto del Servicio]
+            </div>
+            <div style="flex: 1;">
+                <h2 id="prod-name">Nombre del Servicio</h2>
+                <p><strong id="prod-category">Categoría</strong></p>
+                <p id="prod-desc">Descripción detallada del servicio.</p>
+                <span id="prod-price" class="price-tag" style="font-size: 1.5rem;">$0.000</span>
+                <br>
+                <button id="add-to-cart" class="btn btn-primary">Agregar al Carrito</button>
+                <a href="productos.html" class="btn btn-outline">Volver</a>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2026 Barbería Elegance - Trabajo de Evaluación Fullstack</p>
+    </footer>
+
+    <script src="../assets/js/validations.js"></script>
+    <script src="../assets/js/cart.js"></script>
+    <script src="../assets/js/store.js"></script>
+</body>
+</html>

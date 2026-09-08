@@ -33,8 +33,8 @@ Este proyecto es una aplicación web desarrollada para la evaluación del curso 
 │   └── usuarios-mgr.html   # Gestión de usuarios
 ├── assets/                # Recursos estáticos
 │   ├── css/               # Estilos globales y específicos (admin.css, styles.css)
-│   ├── img/               # Imágenes de productos y blog
 │   └── js/                # Lógica de JavaScript (auth.js, cart.js, store.js, admin.js)
+├── imagenes/              # Imágenes de productos y logo
 ├── documentoss/           # Documentación técnica del proyecto
 │   ├── ERS.docx           # Especificación de Requisitos de Software
 │   └── Matriz.docx        # Matriz de Requerimientos

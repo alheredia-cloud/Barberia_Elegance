@@ -1,0 +1,72 @@
+/* Componentes básicos - Nivel Estudiante */
+.btn {
+    padding: 10px 20px;
+    cursor: pointer;
+    font-weight: bold;
+    text-decoration: none;
+    display: inline-block;
+    border: 1px solid #000;
+}
+
+.btn-primary {
+    background-color: #d4af37;
+    color: #000;
+}
+
+.btn-outline {
+    background-color: #fff;
+    color: #000;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+.form-control {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+}
+
+.card {
+    border: 1px solid #ccc;
+    padding: 15px;
+    margin: 10px;
+    background-color: #fafafa;
+    text-align: center;
+    width: 250px;
+    display: inline-block;
+    vertical-align: top;
+}
+
+.price-tag {
+    font-weight: bold;
+    font-size: 1.2rem;
+    display: block;
+    margin: 10px 0;
+}
+
+.card-img {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+    border-radius: 4px 4px 0 0;
+}
+
+.detail-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.about-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border: 1px solid #ccc;
+}

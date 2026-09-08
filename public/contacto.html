@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Barbería Elegance - Contacto</title>
+    <link rel="stylesheet" href="../assets/css/styles.css">
+    <link rel="stylesheet" href="../assets/css/components.css">
+    <style>
+        .contact-box {
+            width: 500px;
+            margin: 0 auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            background-color: #fafafa;
+        }
+    </style>
+</head>
+<body>
+    <img src="../imagenes/logo barberia.png" class="logo-top-right" alt="Logo Barbería">
+
+    <nav>
+        <a href="index.html">Inicio</a>
+        <a href="productos.html">Servicios</a>
+        <a href="nosotros.html">Nosotros</a>
+        <a href="blog.html">Blog</a>
+        <a href="contacto.html">Contacto</a>
+        <a href="login.html">Login</a>
+        <a href="carrito.html">Carrito (0)</a>
+    </nav>
+
+    <div class="container">
+        <div class="contact-box">
+            <h2>Contáctanos</h2>
+            <form id="formContacto">
+                <div class="form-group">
+                    <label>Nombre (Máx 100 carac.):</label>
+                    <input type="text" id="nombre" class="form-control" maxlength="100" required>
+                </div>
+                <div class="form-group">
+                    <label>Correo Electrónico:</label>
+                    <input type="email" id="correo" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label>Comentario (Máx 500 carac.):</label>
+                    <textarea id="comentario" class="form-control" rows="5" maxlength="500" required></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">Enviar Mensaje</button>
+            </form>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2026 Barbería Elegance - Trabajo de Evaluación Fullstack</p>
+    </footer>
+
+    <script src="../assets/js/validations.js"></script>
+    <script>
+        document.getElementById("formContacto").onsubmit = function(evento) {
+            evento.preventDefault();
+            var nombre = document.getElementById("nombre").value;
+            var correo = document.getElementById("correo").value;
+            var comentario = document.getElementById("comentario").value;
+
+            if (!validarNombreContacto(nombre)) {
+                alert("Error: El nombre no puede exceder los 100 caracteres");
+                return;
+            }
+            if (!validarCorreo(correo)) {
+                alert("Error: El correo debe ser @duoc.cl, @profesor.duoc.cl o @gmail.com");
+                return;
+            }
+            if (!validarComentarioContacto(comentario)) {
+                alert("Error: El comentario no puede exceder los 500 caracteres");
+                return;
+            }
+
+            alert("Mensaje enviado con éxito. Nos contactaremos pronto.");
+            this.reset();
+        };
+    </script>
+</body>
+</html>

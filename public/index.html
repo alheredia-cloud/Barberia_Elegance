@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Barbería Elegance - Inicio</title>
+    <link rel="stylesheet" href="../assets/css/styles.css">
+    <link rel="stylesheet" href="../assets/css/components.css">
+    <style>
+        /* Estilo interno para el banner principal */
+        .banner {
+            background-color: #ddd;
+            padding: 50px;
+            text-align: center;
+            border: 2px solid #333;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <img src="../imagenes/logo barberia.png" class="logo-top-right" alt="Logo Barbería">
+
+    <!-- Menu de Navegacion -->
+    <nav>
+        <a href="index.html">Inicio</a>
+        <a href="productos.html">Servicios</a>
+        <a href="nosotros.html">Nosotros</a>
+        <a href="blog.html">Blog</a>
+        <a href="contacto.html">Contacto</a>
+        <a href="login.html">Login</a>
+        <a href="carrito.html">Carrito (<span id="cart-count">0</span>)</a>
+    </nav>
+
+    <div class="container">
+        <div class="banner">
+            <h1>Bienvenidos a Barbería Elegance</h1>
+            <p>El mejor lugar para tu corte y barba.</p>
+            <br>
+            <a href="productos.html" class="btn btn-primary">Ver Nuestros Servicios</a>
+        </div>
+
+        <h2>Nuestros Servicios Destacados</h2>
+        <div style="text-align: center;">
+            <div class="card">
+                <h3>Corte Clásico</h3>
+                <p>Corte tradicional con tijera.</p>
+                <span class="price-tag">$10.000</span>
+                <a href="producto-detalle.html" class="btn btn-outline">Detalles</a>
+            </div>
+            <div class="card">
+                <h3>Barba Completa</h3>
+                <p>Perfilado de barba profesional.</p>
+                <span class="price-tag">$7.000</span>
+                <a href="producto-detalle.html" class="btn btn-outline">Detalles</a>
+            </div>
+            <div class="card">
+                <h3>Tratamiento Facial</h3>
+                <p>Limpieza profunda de piel.</p>
+                <span class="price-tag">$15.000</span>
+                <a href="producto-detalle.html" class="btn btn-outline">Detalles</a>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2026 Barbería Elegance - Trabajo de Evaluación Fullstack</p>
+    </footer>
+
+    <script src="../assets/js/cart.js"></script>
+</body>
+</html>

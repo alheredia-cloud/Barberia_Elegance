@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Barbería Elegance - Catálogo</title>
+    <link rel="stylesheet" href="../assets/css/styles.css">
+    <link rel="stylesheet" href="../assets/css/components.css">
+</head>
+<body>
+    <img src="../imagenes/logo barberia.png" class="logo-top-right" alt="Logo Barbería">
+
+    <nav>
+        <a href="index.html">Inicio</a>
+        <a href="productos.html">Servicios</a>
+        <a href="nosotros.html">Nosotros</a>
+        <a href="blog.html">Blog</a>
+        <a href="contacto.html">Contacto</a>
+        <a href="login.html">Login</a>
+        <a href="carrito.html">Carrito (<span id="cart-count">0</span>)</a>
+    </nav>
+
+    <div class="container">
+        <h2 style="text-align: center;">Nuestros Servicios y Productos</h2>
+        <div id="productos-container" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; justify-items: center; padding: 20px 0;">
+            <!-- Los productos se cargan dinámicamente aquí -->
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2026 Barbería Elegance - Trabajo de Evaluación Fullstack</p>
+    </footer>
+
+    <script src="../assets/js/storage.service.js"></script>
+    <script src="../assets/js/cart.js"></script>
+    <script>
+        function cargarProductosDinamicos() {
+            const container = document.getElementById('productos-container');
+            const productos = storageService.obtener('productos') || [];
+
+            if (productos.length === 0) {
+                container.innerHTML = '<p>No hay productos disponibles en este momento.</p>';
+                return;
+            }
+
+            container.innerHTML = productos.map(p => {
+                const estaAgotado = p.stock <= 0;
+                const botonTexto = estaAgotado ? 'Agotado' : 'Agregar al Carrito';
+                const claseBoton = estaAgotado ? 'btn-disabled' : 'btn';
+                const atributoDisabled = estaAgotado ? 'disabled' : '';
+
+                return `
+                    <div class="card">
+                        <img src="../imagenes/${p.nombre === 'Corte Clásico' ? 'corte clasico.jpe' :
+                                   p.nombre === 'Barba Completa' ? 'Barba completa.jpe' :
+                                   p.nombre === 'Combo Elegance' ? 'afeitado imperial.jpg' :
+                                   p.nombre === 'Cera Modeladora' ? 'pomada modeladora.jpe' :
+                                   'logo barberia.png'}"
+                             alt="${p.nombre}" class="card-img">
+                        <h3>${p.nombre}</h3>
+                        <p>Categoría: ${p.categoria}</p>
+                        <span class="price-tag">$${p.precio.toLocaleString()}</span>
+                        <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 15px;">
+                            <button ${atributoDisabled}
+                                    onclick="window.agregarAlCarrito(${p.id})"
+                                    class="btn ${claseBoton}">${botonTexto}</button>
+                            <a href="producto-detalle.html?id=${p.id}" class="btn btn-outline">Ver Detalle</a>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Ejecutar la carga al iniciar
+        document.addEventListener('DOMContentLoaded', () => {
+            if (typeof storageService !== 'undefined') {
+                storageService.inicializarDatos();
+                cargarProductosDinamicos();
+            } else {
+                console.error("storageService no cargado");
+            }
+        });
+    </script>
+
+</body>
+</html>

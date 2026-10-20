@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Barbería Elegance - Inicio</title>
+    <link rel="stylesheet" href="../assets/css/styles.css">
+    <link rel="stylesheet" href="../assets/css/components.css">
+    <style>
+        /* Estilo interno para el banner principal */
+        .banner {
+            background-color: #ddd;
+            padding: 50px;
+            text-align: center;
+            border: 2px solid #333;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <img src="../imagenes/logo barberia.png" class="logo-top-right" alt="Logo Barbería">
+
+    <!-- Menu de Navegacion -->
+    <nav>
+        <a href="index.html">Inicio</a>
+        <a href="productos.html">Servicios</a>
+        <a href="nosotros.html">Nosotros</a>
+        <a href="blog.html">Blog</a>
+        <a href="contacto.html">Contacto</a>
+        <a href="login.html" id="btn-login">Login</a>
+        <a href="registro.html" id="btn-registro" style="display: none;">Registro</a>
+        <a href="#" id="btn-cerrar-sesion" style="display: none;">Cerrar Sesión</a>
+        <a href="carrito.html">Carrito (<span id="cart-count">0</span>)</a>
+    </nav>
+
+    <div class="container">
+        <div class="banner">
+            <h1>Bienvenidos a Barbería Elegance</h1>
+            <p>El mejor lugar para tu corte y barba.</p>
+            <br>
+            <a href="productos.html" class="btn btn-primary">Ver Nuestros Servicios</a>
+        </div>
+
+        <h2>Nuestros Servicios Destacados</h2>
+        <div id="destacados-container" style="text-align: center;">
+            <!-- Los servicios destacados se cargan dinámicamente aquí -->
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2026 Barbería Elegance - Trabajo de Evaluación Fullstack</p>
+    </footer>
+
+    <script src="../assets/js/storage.service.js"></script>
+    <script src="../assets/js/cart.js"></script>
+    <script>
+        function cargarDestacados() {
+            const container = document.getElementById('destacados-container');
+            const productos = storageService.obtener('productos') || [];
+
+            // Tomamos solo los primeros 3 productos como destacados
+            const destacados = productos.slice(0, 3);
+
+            if (destacados.length === 0) {
+                container.innerHTML = '<p>No hay servicios destacados disponibles.</p>';
+                return;
+            }
+
+            container.innerHTML = destacados.map(p => {
+                return `
+                    <div class="card">
+                        <h3>${p.nombre}</h3>
+                        <p>${p.categoria === 'Cortes' ? 'Corte tradicional con tijera.' : p.categoria === 'Barba' ? 'Perfilado de barba profesional.' : 'Cuidado y bienestar facial.'}</p>
+                        <span class="price-tag">$${p.precio.toLocaleString()}</span>
+                        <a href="producto-detalle.html?id=${p.id}" class="btn btn-outline">Detalles</a>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            storageService.inicializarDatos();
+            cargarDestacados();
+        });
+    </script>
+</body>
+</html>

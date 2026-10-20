@@ -40,6 +40,10 @@ nav {
     color: white;
     padding: 10px;
     text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
 }
 
 nav a {
@@ -47,6 +51,7 @@ nav a {
     margin: 0 15px;
     text-decoration: none;
     font-weight: bold;
+    white-space: nowrap;
 }
 
 nav a:hover {

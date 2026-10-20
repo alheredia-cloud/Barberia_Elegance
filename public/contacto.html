@@ -24,7 +24,9 @@
         <a href="nosotros.html">Nosotros</a>
         <a href="blog.html">Blog</a>
         <a href="contacto.html">Contacto</a>
-        <a href="login.html">Login</a>
+        <a href="login.html" id="btn-login">Login</a>
+        <a href="registro.html" id="btn-registro" style="display: none;">Registro</a>
+        <a href="#" id="btn-cerrar-sesion" style="display: none;">Cerrar Sesión</a>
         <a href="carrito.html">Carrito (<span id="cart-count">0</span>)</a>
     </nav>
 
@@ -54,9 +56,20 @@
     </footer>
 
     <script src="../assets/js/storage.service.js"></script>
+    <script src="../assets/js/auth.js"></script>
     <script src="../assets/js/cart.js"></script>
     <script src="../assets/js/validations.js"></script>
     <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            storageService.inicializarDatos();
+            authService.actualizarInterfaz();
+
+            document.getElementById('btn-cerrar-sesion')?.addEventListener('click', (e) => {
+                e.preventDefault();
+                authService.cerrarSesion();
+            });
+        });
+
         document.getElementById("formContacto").onsubmit = function(evento) {
             evento.preventDefault();
             var nombre = document.getElementById("nombre").value;
@@ -65,7 +78,6 @@
 
             console.log("Validando formulario de contacto...");
 
-            // Corregido: Usar los nombres de funciones exactos de validations.js
             if (!validarNombre(nombre)) {
                 alert("Error: El nombre no puede exceder los 100 caracteres");
                 return;

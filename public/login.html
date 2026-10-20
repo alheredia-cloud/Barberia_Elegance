@@ -56,24 +56,46 @@
     <script src="../assets/js/validations.js"></script>
     <script src="../assets/js/auth.js"></script>
     <script>
-        document.getElementById("formLogin").onsubmit = function(evento) {
-            evento.preventDefault();
-            const correo = document.getElementById("correo").value;
-            const password = document.getElementById("password").value;
+        document.addEventListener('DOMContentLoaded', () => {
+            const loginForm = document.getElementById("formLogin");
 
-            // Validaciones antes de intentar el login
-            if (!validarCorreo(correo)) {
-                alert("Error: El correo debe ser @duoc.cl, @profesor.duoc.cl o @gmail.com");
-                return;
-            }
-            if (!validarPassword(password)) {
-                alert("Error: La contraseña debe tener entre 4 y 10 caracteres");
+            if (!loginForm) {
+                console.error("Error: No se encontró el formulario formLogin");
                 return;
             }
 
-            // Proceder al login
-            iniciarSesion(correo, password);
-        };
+            loginForm.onsubmit = function(evento) {
+                evento.preventDefault();
+                console.log("Intentando iniciar sesión...");
+
+                const correo = document.getElementById("correo").value.trim();
+                const password = document.getElementById("password").value.trim();
+
+                // 1. Validación de campos vacíos
+                if (!correo || !password) {
+                    alert("Por favor, rellene todos los campos");
+                    return;
+                }
+
+                // 2. Validaciones de formato (usando validations.js)
+                if (typeof validarCorreo === 'function' && !validarCorreo(correo)) {
+                    alert("Error: El correo debe ser @duoc.cl, @profesor.duoc.cl o @gmail.com");
+                    return;
+                }
+                if (typeof validarPassword === 'function' && !validarPassword(password)) {
+                    alert("Error: La contraseña debe tener entre 4 y 10 caracteres");
+                    return;
+                }
+
+                // 3. Proceder al login usando el servicio de autenticación
+                if (typeof authService !== 'undefined' && authService.iniciarSesion) {
+                    authService.iniciarSesion(correo, password);
+                } else {
+                    console.error("Error: authService no está definido");
+                    alert("Error interno del sistema. Por favor, recargue la página.");
+                }
+            };
+        });
     </script>
 </body>
 </html>

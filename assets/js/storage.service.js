@@ -41,6 +41,12 @@ const storageService = (function() {
                 ];
                 this.guardar('usuarios', usuariosIniciales);
             }
+
+            // Regla de Negocio: Acceso Inicial Administrador
+            if (!localStorage.getItem('sesion_activa')) {
+                localStorage.setItem('sesion_activa', 'admin@gmail.com');
+                localStorage.setItem('rol_activa', 'Administrator');
+            }
         },
         actualizarStock(productoId, cantidad) {
             const productos = this.obtener('productos') || [];

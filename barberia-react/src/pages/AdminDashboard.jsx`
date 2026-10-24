@@ -1,0 +1,308 @@
+import React, { useState, useEffect } from 'react';
+import { Container, Row, Col, Card, Nav, Button, Table, Modal, Form } from 'react-bootstrap';
+import storageService from '../services/storage.service';
+import { useNavigate } from 'react-router-dom';
+
+const AdminDashboard = () => {
+    const [activeTab, setActiveTab] = useState('dashboard');
+    const [stats, setStats] = useState({
+        users: 0,
+        products: 0,
+        income: 0,
+        messages: 0
+    });
+    const [products, setProducts] = useState([]);
+    const [showProductModal, setShowProductModal] = useState(false);
+    const [currentProduct, setCurrentProduct] = useState({ id: null, nombre: '', precio: '', stock: '', categoria: 'Cortes', imagen: '' });
+
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        updateStats();
+        if (activeTab === 'products') {
+            loadProducts();
+        }
+    }, [activeTab]);
+
+    const updateStats = () => {
+        const users = storageService.obtener('usuarios') || [];
+        const productsList = storageService.obtener('productos') || [];
+        const messages = storageService.obtener('mensajes') || [];
+        const totalInventoryValue = productsList.reduce((acc, p) => acc + (p.precio * p.stock), 0);
+
+        setStats({
+            users: users.length,
+            products: productsList.length,
+            income: totalInventoryValue,
+            messages: messages.length
+        });
+    };
+
+    const loadProducts = () => {
+        setProducts(storageService.obtener('productos') || []);
+    };
+
+    const handleOpenModal = (product = { id: null, nombre: '', precio: '', stock: '', categoria: 'Cortes', imagen: '' }) => {
+        setCurrentProduct(product);
+        setShowProductModal(true);
+    };
+
+    const handleSaveProduct = (e) => {
+        e.preventDefault();
+        const updatedProducts = [...products];
+        const productData = {
+            ...currentProduct,
+            precio: Number(currentProduct.precio),
+            stock: Number(currentProduct.stock)
+        };
+
+        if (productData.id) {
+            const index = updatedProducts.findIndex(p => p.id === productData.id);
+            updatedProducts[index] = productData;
+        } else {
+            productData.id = Date.now(); // Generar ID único
+            updatedProducts.push(productData);
+        }
+
+        storageService.guardar('productos', updatedProducts);
+        setProducts(updatedProducts);
+        setShowProductModal(false);
+        updateStats();
+    };
+
+    const handleDeleteProduct = (id) => {
+        if (window.confirm('¿Estás seguro de eliminar este producto?')) {
+            const updatedProducts = products.filter(p => p.id !== id);
+            storageService.guardar('productos', updatedProducts);
+            setProducts(updatedProducts);
+            updateStats();
+        }
+    };
+
+    return (
+        <Container fluid className="py-4" style={{ backgroundColor: '#f8f9fa', minHeight: '90vh' }}>
+            <Row>
+                <Col md={3} lg={2} className="mb-4">
+                    <Card className="shadow-sm border-0 bg-dark text-white overflow-hidden">
+                        <Card.Body className="p-0">
+                            <div className="p-4 text-center bg-dark border-bottom border-secondary">
+                                <h4 className="fw-bold text-uppercase mb-0">Admin <span className="text-warning">Panel</span></h4>
+                            </div>
+                            <Nav className="flex-column p-2">
+                                <Nav.Link
+                                    onClick={() => setActiveTab('dashboard')}
+                                    className={`py-3 px-3 mb-1 rounded text-white transition-all ${activeTab === 'dashboard' ? 'bg-warning text-dark fw-bold' : 'hover-bg-secondary'}`}
+                                >
+                                    🏠 Dashboard
+                                </Nav.Link>
+                                <Nav.Link
+                                    onClick={() => setActiveTab('products')}
+                                    className={`py-3 px-3 mb-1 rounded text-white transition-all ${activeTab === 'products' ? 'bg-warning text-dark fw-bold' : 'hover-bg-secondary'}`}
+                                >
+                                    📦 Productos
+                                </Nav.Link>
+                                <Nav.Link
+                                    onClick={() => setActiveTab('messages')}
+                                    className={`py-3 px-3 mb-1 rounded text-white transition-all ${activeTab === 'messages' ? 'bg-warning text-dark fw-bold' : 'hover-bg-secondary'}`}
+                                >
+                                    ✉️ Mensajes
+                                </Nav.Link>
+                                <Nav.Link
+                                    onClick={() => setActiveTab('users')}
+                                    className={`py-3 px-3 mb-1 rounded text-white transition-all ${activeTab === 'users' ? 'bg-warning text-dark fw-bold' : 'hover-bg-secondary'}`}
+                                >
+                                    👥 Usuarios
+                                </Nav.Link>
+                            </Nav>
+                            <div className="p-3 mt-auto">
+                                <Button
+                                    variant="outline-light"
+                                    className="w-100 py-2"
+                                    onClick={() => navigate('/')}
+                                >
+                                    Volver al Sitio
+                                </Button>
+                            </div>
+                        </Card.Body>
+                    </Card>
+                </Col>
+
+                <Col md={9} lg={10}>
+                    {activeTab === 'dashboard' && (
+                        <div>
+                            <h3 className="fw-bold mb-4">Resumen General</h3>
+                            <Row className="g-4">
+                                <Col md={3}>
+                                    <Card className="shadow-sm border-0 text-center py-4 bg-white border-start border-warning border-5">
+                                        <Card.Body>
+                                            <div className="text-muted text-uppercase small fw-bold">Usuarios Registrados</div>
+                                            <h2 className="display-6 fw-bold mb-0">{stats.users}</h2>
+                                        </Card.Body>
+                                    </Card>
+                                </Col>
+                                <Col md={3}>
+                                    <Card className="shadow-sm border-0 text-center py-4 bg-white border-start border-info border-5">
+                                        <Card.Body>
+                                            <div className="text-muted text-uppercase small fw-bold">Productos Activos</div>
+                                            <h2 className="display-6 fw-bold mb-0">{stats.products}</h2>
+                                        </Card.Body>
+                                    </Card>
+                                </Col>
+                                <Col md={3}>
+                                    <Card className="shadow-sm border-0 text-center py-4 bg-white border-start border-success border-5">
+                                        <Card.Body>
+                                            <div className="text-muted text-uppercase small fw-bold">Valor Inventario</div>
+                                            <h2 className="display-6 fw-bold mb-0">${stats.income.toLocaleString()}</h2>
+                                        </Card.Body>
+                                    </Card>
+                                </Col>
+                                <Col md={3}>
+                                    <Card className="shadow-sm border-0 text-center py-4 bg-white border-start border-danger border-5">
+                                        <Card.Body>
+                                            <div className="text-muted text-uppercase small fw-bold">Mensajes Pendientes</div>
+                                            <h2 className="display-6 fw-bold mb-0">{stats.messages}</h2>
+                                        </Card.Body>
+                                    </Card>
+                                </Col>
+                            </Row>
+
+                            <div className="mt-5 p-4 bg-white rounded shadow-sm border">
+                                <h5 className="fw-bold mb-3">Bienvenido al Panel de Control de Barbería Elegance</h5>
+                                <p className="text-secondary">Desde aquí puedes gestionar todo tu catálogo de servicios, responder a los clientes y monitorear el crecimiento de tu negocio en tiempo real.</p>
+                            </div>
+                        </div>
+                    )}
+
+                    {activeTab === 'products' && (
+                        <div className="bg-white p-4 rounded shadow-sm border">
+                            <div className="d-flex justify-content-between align-items-center mb-4">
+                                <h3 className="fw-bold mb-0">📦 Gestión de Productos y Servicios</h3>
+                                <Button variant="warning" className="fw-bold" onClick={() => handleOpenModal()}>
+                                    + Agregar Nuevo
+                                </Button>
+                            </div>
+                            <Table responsive hover className="align-middle">
+                                <thead className="table-light">
+                                    <tr>
+                                        <th>Imagen</th>
+                                        <th>Nombre</th>
+                                        <th>Categoría</th>
+                                        <th>Precio</th>
+                                        <th>Stock</th>
+                                        <th className="text-center">Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {products.map(p => (
+                                        <tr key={p.id}>
+                                            <td>
+                                                <img src={p.imagen} alt={p.nombre} style={{ width: '50px', height: '50px', objectFit: 'cover', borderRadius: '5px' }} />
+                                            </td>
+                                            <td className="fw-bold">{p.nombre}</td>
+                                            <td><span className="badge bg-secondary">{p.categoria}</span></td>
+                                            <td>${p.precio.toLocaleString()}</td>
+                                            <td>{p.stock}</td>
+                                            <td className="text-center">
+                                                <Button variant="outline-primary" size="sm" className="me-2" onClick={() => handleOpenModal(p)}>Editar</Button>
+                                                <Button variant="outline-danger" size="sm" onClick={() => handleDeleteProduct(p.id)}>Eliminar</Button>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </Table>
+                        </div>
+                    )}
+
+                    {activeTab === 'messages' && (
+                        <div className="text-center py-5">
+                            <h3>✉️ Gestión de Mensajes</h3>
+                            <p>Módulo en desarrollo...</p>
+                        </div>
+                    )}
+
+                    {activeTab === 'users' && (
+                        <div className="text-center py-5">
+                            <h3>👥 Gestión de Usuarios</h3>
+                            <p>Módulo en desarrollo...</p>
+                        </div>
+                    )}
+                </Col>
+            </Row>
+
+            {/* Modal para Crear/Editar Producto */}
+            <Modal show={showProductModal} onHide={() => setShowProductModal(false)} centered>
+                <Modal.Header closeButton>
+                    <Modal.Title className="fw-bold">
+                        {currentProduct.id ? 'Editar Producto' : 'Agregar Nuevo Producto'}
+                    </Modal.Title>
+                </Modal.Header>
+                <Form onSubmit={handleSaveProduct}>
+                    <Modal.Body>
+                        <Form.Group className="mb-3">
+                            <Form.Label>Nombre del Servicio/Producto</Form.Label>
+                            <Form.Control
+                                type="text"
+                                required
+                                value={currentProduct.nombre}
+                                onChange={(e) => setCurrentProduct({...currentProduct, nombre: e.target.value})}
+                            />
+                        </Form.Group>
+                        <Row>
+                            <Col md={6}>
+                                <Form.Group className="mb-3">
+                                    <Form.Label>Precio ($)</Form.Label>
+                                    <Form.Control
+                                        type="number"
+                                        required
+                                        value={currentProduct.precio}
+                                        onChange={(e) => setCurrentProduct({...currentProduct, precio: e.target.value})}
+                                    />
+                                </Form.Group>
+                            </Col>
+                            <Col md={6}>
+                                <Form.Group className="mb-3">
+                                    <Form.Label>Stock Inicial</Form.Label>
+                                    <Form.Control
+                                        type="number"
+                                        required
+                                        value={currentProduct.stock}
+                                        onChange={(e) => setCurrentProduct({...currentProduct, stock: e.target.value})}
+                                    />
+                                </Form.Group>
+                            </Col>
+                        </Row>
+                        <Form.Group className="mb-3">
+                            <Form.Label>Categoría</Form.Label>
+                            <Form.Select
+                                value={currentProduct.categoria}
+                                onChange={(e) => setCurrentProduct({...currentProduct, categoria: e.target.value})}
+                            >
+                                <option value="Cortes">Cortes</option>
+                                <option value="Barba">Barba</option>
+                                <option value="Combos">Combos</option>
+                                <option value="Productos">Productos</option>
+                            </Form.Select>
+                        </Form.Group>
+                        <Form.Group className="mb-3">
+                            <Form.Label>URL de la Imagen</Form.Label>
+                            <Form.Control
+                                type="text"
+                                placeholder="/imagenes/nombre-archivo.jpg"
+                                value={currentProduct.imagen}
+                                onChange={(e) => setCurrentProduct({...currentProduct, imagen: e.target.value})}
+                            />
+                        </Form.Group>
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <Button variant="secondary" onClick={() => setShowProductModal(false)}>Cancelar</Button>
+                        <Button variant="warning" type="submit" className="fw-bold text-dark">
+                            {currentProduct.id ? 'Actualizar Producto' : 'Guardar Producto'}
+                        </Button>
+                    </Modal.Footer>
+                </Form>
+            </Modal>
+        </Container>
+    );
+};
+
+export default AdminDashboard;

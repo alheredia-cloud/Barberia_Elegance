@@ -15,6 +15,8 @@ import ProductDetailPage from './pages/ProductDetailPage';
 import AboutPage from './pages/AboutPage';
 import ContactPage from './pages/ContactPage';
 import BlogPage from './pages/BlogPage';
+import AdminDashboard from './pages/AdminDashboard';
+import ProtectedRoute from './components/ProtectedRoute';
 import storageService from './services/storage.service';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
@@ -42,6 +44,14 @@ function App() {
                                 <Route path="/nosotros" element={<AboutPage />} />
                                 <Route path="/contacto" element={<ContactPage />} />
                                 <Route path="/blog" element={<BlogPage />} />
+                                <Route
+                                    path="/admin"
+                                    element={
+                                        <ProtectedRoute requiredRole="Administrator">
+                                            <AdminDashboard />
+                                        </ProtectedRoute>
+                                    }
+                                />
                                 <Route path="*" element={<div className="text-center py-5"><h2>404 - Página no encontrada</h2></div>} />
                             </Routes>
                         </main>

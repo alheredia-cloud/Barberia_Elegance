@@ -22,6 +22,16 @@ const ContactPage = () => {
             return;
         }
 
+        // Validación de Email (Sello Duoc: @duoc.cl, @gmail.com, etc.)
+        const emailRegex = /^[a-zA-Z0-9._%+-]+@(duoc\.cl|gmail\.com|outlook\.com|hotmail\.com|yahoo\.com)$/;
+        if (!emailRegex.test(formData.email)) {
+            setStatus({
+                type: 'danger',
+                message: 'Por favor, ingresa un correo electrónico válido (@duoc.cl, @gmail.com, @outlook.com, etc.).'
+            });
+            return;
+        }
+
         // MIGRACIÓN VANILLA: Guardar mensaje en el localStorage vía storageService
         storageService.guardarMensaje(formData);
 

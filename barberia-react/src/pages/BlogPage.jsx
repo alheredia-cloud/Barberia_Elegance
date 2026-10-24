@@ -11,21 +11,24 @@ const BlogPage = () => {
             id: 1,
             titulo: 'Tendencias de Barba 2026',
             resumen: 'Descubre los estilos que dominarán este año y cómo mantener tu barba impecable.',
-            imagen: 'https://via.placeholder.com/400x250?text=Tendencias+2026',
+            imagen: '/imagenes/Tendencias barba 2026.png',
+            url: 'https://www.vogue.mx/articulo/mejores-cortes-de-cabello-de-hombres-en-2026',
             fecha: '15 Oct, 2026'
         },
         {
             id: 2,
             titulo: 'El Arte del Afeitado Clásico',
             resumen: 'Por qué la navaja libre sigue siendo la mejor opción para un acabado perfecto.',
-            imagen: 'https://via.placeholder.com/400x250?text=Afeitado+Clasico',
+            imagen: '/imagenes/El arte del afeitado clasico.jpg',
+            url: 'https://www.blogmodahombre.com/por-que-el-afeitado-clasico-esta-de-vuelta-y-como-dominarlo/',
             fecha: '10 Oct, 2026'
         },
         {
             id: 3,
             titulo: 'Cuidado del Cabello Masculino',
             resumen: 'Consejos prácticos para elegir el producto adecuado según tu tipo de cabello.',
-            imagen: 'https://via.placeholder.com/400x250?text=Cuidado+Cabello',
+            imagen: '/imagenes/Cuidado del Cabello Masculino.jpg',
+            url: 'https://www.lorealparis.cl/cuidado-facial-hombres/cuidado-de-la-barba?gad_source=1&gad_campaignid=17309641844&gbraid=0AAAAACrVon-PIelLyfmbDYuf12qsvJ0HE&gclid=Cj0KCQjw5P7UBhDaARIsAOSlS1NU9nFrmQhc_QObRzZSJWV4-zXuqfFiNpOuAMgx_xFzi5pZi_DPpzIaApiCEALw_wcB',
             fecha: '05 Oct, 2026'
         }
     ];
@@ -53,7 +56,7 @@ const BlogPage = () => {
                                     <Button
                                         variant="outline-dark"
                                         className="fw-bold py-2 w-100"
-                                        onClick={() => alert('Próximamente: Detalle de la noticia')}
+                                        onClick={() => window.open(post.url, '_blank')}
                                     >
                                         Leer más
                                     </Button>

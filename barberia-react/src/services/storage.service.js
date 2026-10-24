@@ -28,33 +28,34 @@ const storageService = {
 
         const productosIniciales = [
             {
-                id: 1,
+                id: 101,
                 nombre: 'Corte Clásico',
-                precio: 10,
+                precio: 15000,
                 stock: 100,
                 categoria: 'Cortes',
                 imagen: '/imagenes/corte clasico.jpe'
             },
             {
-                id: 2,
+                id: 102,
                 nombre: 'Barba Completa',
-                precio: 8,
+                precio: 12000,
                 stock: 50,
                 categoria: 'Barba',
                 imagen: '/imagenes/Barba completa.jpe'
             },
             {
-                id: 3,
+                id: 103,
                 nombre: 'Combo Elegance',
-                precio: 15,
+                precio: 22000,
                 stock: 30,
                 categoria: 'Combos',
+                descripcion: 'Incluye: 1. Pulido de la barba a elección, 2. Corte de cabello incluido y masajes faciales.',
                 imagen: '/imagenes/afeitado imperial.jpg'
             },
             {
-                id: 4,
+                id: 104,
                 nombre: 'Cera Modeladora',
-                precio: 12,
+                precio: 8000,
                 stock: 0,
                 categoria: 'Productos',
                 imagen: '/imagenes/pomada modeladora.jpe'

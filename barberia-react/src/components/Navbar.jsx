@@ -21,8 +21,13 @@ const AppNavbar = () => {
     return (
         <Navbar bg="dark" variant="dark" expand="lg" sticky="top" className="py-3 shadow">
             <Container>
-                <Navbar.Brand href="/" className="fw-bold fs-3 text-uppercase">
-                    💈 Barbería <span className="text-warning">Elegance</span>
+                <Navbar.Brand href="/" className="fw-bold fs-3 text-uppercase d-flex align-items-center">
+                    <img
+                        src="/imagenes/logo barberia.png"
+                        alt="Logo Elegance"
+                        style={{ height: '60px', width: 'auto', marginRight: '15px' }}
+                    />
+                    Barbería <span className="text-warning ms-1">Elegance</span>
                 </Navbar.Brand>
 
                 <Navbar.Toggle aria-controls="basic-navbar-nav" />

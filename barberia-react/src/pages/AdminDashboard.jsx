@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Container, Row, Col, Card, Nav, Button, Table, Modal, Form } from 'react-bootstrap';
 import storageService from '../services/storage.service';
 import { useNavigate } from 'react-router-dom';
+import { useProducts } from '../hooks/ProductContext';
 
 const AdminDashboard = () => {
     const [activeTab, setActiveTab] = useState('dashboard');
@@ -13,15 +14,18 @@ const AdminDashboard = () => {
     });
 
     // ESTADOS PARA LOS DATOS
+    const { products: productsContext, updateProducts } = useProducts();
     const [products, setProducts] = useState([]);
     const [messages, setMessages] = useState([]);
     const [users, setUsers] = useState([]);
+    const [userSearch, setUserSearch] = useState('');
+    const [userRoleFilter, setUserRoleFilter] = useState('Todos');
 
     // ESTADOS PARA MODALES
     const [showProductModal, setShowProductModal] = useState(false);
     const [currentProduct, setCurrentProduct] = useState({ id: null, nombre: '', precio: '', stock: '', categoria: 'Cortes', imagen: '' });
     const [showUserModal, setShowUserModal] = useState(false);
-    const [currentUser, setCurrentUser] = useState({ id: null, email: '', rut: '', rol: 'User' });
+    const [currentUser, setCurrentUser] = useState({ id: null, email: '', rut: '', rol: 'Cliente' });
     const [selectedMessage, setSelectedMessage] = useState(null);
     const [showMessageModal, setShowMessageModal] = useState(false);
 
@@ -48,9 +52,16 @@ const AdminDashboard = () => {
         });
     };
 
-    const loadProducts = () => setProducts(storageService.obtener('productos') || []);
+    const loadProducts = () => setProducts(productsContext);
     const loadMessages = () => setMessages(storageService.obtener('mensajes') || []);
     const loadUsers = () => setUsers(storageService.obtener('usuarios') || []);
+
+    const filteredUsers = users.filter(u => {
+        const matchesSearch = u.email.toLowerCase().includes(userSearch.toLowerCase()) ||
+                              u.rut.includes(userSearch);
+        const matchesRole = userRoleFilter === 'Todos' || u.rol === userRoleFilter;
+        return matchesSearch && matchesRole;
+    });
 
     const handleOpenProductModal = (product = { id: null, nombre: '', precio: '', stock: '', categoria: 'Cortes', imagen: '' }) => {
         setCurrentProduct(product);
@@ -75,6 +86,7 @@ const AdminDashboard = () => {
         }
 
         storageService.guardar('productos', updatedProducts);
+        updateProducts(updatedProducts);
         setProducts(updatedProducts);
         setShowProductModal(false);
         updateStats();
@@ -84,6 +96,7 @@ const AdminDashboard = () => {
         if (window.confirm('¿Estás seguro de eliminar este producto?')) {
             const updatedProducts = products.filter(p => p.id !== id);
             storageService.guardar('productos', updatedProducts);
+            updateProducts(updatedProducts);
             setProducts(updatedProducts);
             updateStats();
         }
@@ -99,7 +112,7 @@ const AdminDashboard = () => {
         }
     };
 
-    const handleOpenUserModal = (user = { email: '', rut: '', rol: 'User' }) => {
+    const handleOpenUserModal = (user = { email: '', rut: '', rol: 'Cliente' }) => {
         setCurrentUser(user);
         setShowUserModal(true);
     };
@@ -315,8 +328,27 @@ const AdminDashboard = () => {
 
                     {activeTab === 'users' && (
                         <div className="bg-white p-4 rounded shadow-sm border">
-                            <div className="d-flex justify-content-center align-items-center mb-4">
+                            <div className="d-flex justify-content-between align-items-center mb-4">
                                 <h3 className="fw-bold mb-0">👥 Gestión de Usuarios Registrados</h3>
+                                <div className="d-flex gap-2">
+                                    <Form.Control
+                                        type="text"
+                                        placeholder="Buscar por email o RUT..."
+                                        className="me-2"
+                                        style={{ width: '250px' }}
+                                        value={userSearch}
+                                        onChange={(e) => setUserSearch(e.target.value)}
+                                    />
+                                    <Form.Select
+                                        style={{ width: '150px' }}
+                                        value={userRoleFilter}
+                                        onChange={(e) => setUserRoleFilter(e.target.value)}
+                                    >
+                                        <option value="Todos">Todos los roles</option>
+                                        <option value="Cliente">Cliente</option>
+                                        <option value="Administrator">Administrador</option>
+                                    </Form.Select>
+                                </div>
                             </div>
                             <Table responsive hover className="align-middle">
                                 <thead className="table-light">
@@ -328,7 +360,7 @@ const AdminDashboard = () => {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {users.length > 0 ? users.map((u) => (
+                                    {filteredUsers.length > 0 ? filteredUsers.map((u) => (
                                         <tr key={u.email}>
                                             <td>{u.rut}</td>
                                             <td className="fw-bold">{u.email}</td>
@@ -340,7 +372,7 @@ const AdminDashboard = () => {
                                         </tr>
                                     )) : (
                                         <tr>
-                                            <td colSpan="4" className="text-center py-4 text-muted">No hay usuarios registrados.</td>
+                                            <td colSpan="4" className="text-center py-4 text-muted">No se encontraron usuarios que coincidan con la búsqueda.</td>
                                         </tr>
                                     )}
                                 </tbody>
@@ -393,7 +425,7 @@ const AdminDashboard = () => {
             </Modal>
 
             {/* Modal para Crear/Editar Producto */}
-            <Modal show={showProductModal} onHider={() => setShowProductModal(false)} centered>
+            <Modal show={showProductModal} onHide={() => setShowProductModal(false)} centered>
                 <Modal.Header closeButton>
                     <Modal.Title className="fw-bold">
                         {currentProduct.id ? 'Editar Producto' : 'Agregar Nuevo Producto'}
@@ -498,7 +530,7 @@ const AdminDashboard = () => {
                                 value={currentUser.rol}
                                 onChange={(e) => setCurrentUser({...currentUser, rol: e.target.value})}
                             >
-                                <option value="User">Usuario Estándar</option>
+                                <option value="Cliente">Cliente</option>
                                 <option value="Administrator">Administrador</option>
                             </Form.Select>
                         </Form.Group>

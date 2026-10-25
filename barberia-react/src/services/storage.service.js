@@ -23,45 +23,61 @@ const storageService = {
         return localStorage.getItem(keys[clave]);
     },
     inicializarDatos() {
-        // Forzamos la actualización para asegurar que los nombres de archivos coincidan exactamente
-        localStorage.removeItem(keys.productos);
+        // Solo inicializamos si no hay productos guardados para evitar borrar cambios del Admin
+        if (!this.obtener('productos')) {
+            const productosIniciales = [
+                {
+                    id: 101,
+                    nombre: 'Corte Clásico',
+                    precio: 15000,
+                    stock: 100,
+                    categoria: 'Cortes',
+                    imagen: '/imagenes/corte clasico.jpe'
+                },
+                {
+                    id: 102,
+                    nombre: 'Barba Completa',
+                    precio: 12000,
+                    stock: 50,
+                    categoria: 'Barba',
+                    imagen: '/imagenes/Barba completa.jpe'
+                },
+                {
+                    id: 103,
+                    nombre: 'Combo Elegance',
+                    precio: 22000,
+                    stock: 30,
+                    categoria: 'Combos',
+                    descripcion: 'Incluye: 1. Pulido de la barba a elección, 2. Corte de cabello incluido y masajes faciales.',
+                    imagen: '/imagenes/afeitado imperial.jpg'
+                },
+                {
+                    id: 104,
+                    nombre: 'Cera Modeladora',
+                    precio: 8000,
+                    stock: 0,
+                    categoria: 'Productos',
+                    imagen: '/imagenes/pomada modeladora.jpe'
+                }
+            ];
+            this.guardar('productos', productosIniciales);
+        }
 
-        const productosIniciales = [
-            {
-                id: 101,
-                nombre: 'Corte Clásico',
-                precio: 15000,
-                stock: 100,
-                categoria: 'Cortes',
-                imagen: '/imagenes/corte clasico.jpe'
-            },
-            {
-                id: 102,
-                nombre: 'Barba Completa',
-                precio: 12000,
-                stock: 50,
-                categoria: 'Barba',
-                imagen: '/imagenes/Barba completa.jpe'
-            },
-            {
-                id: 103,
-                nombre: 'Combo Elegance',
-                precio: 22000,
-                stock: 30,
-                categoria: 'Combos',
-                descripcion: 'Incluye: 1. Pulido de la barba a elección, 2. Corte de cabello incluido y masajes faciales.',
-                imagen: '/imagenes/afeitado imperial.jpg'
-            },
-            {
-                id: 104,
-                nombre: 'Cera Modeladora',
-                precio: 8000,
-                stock: 0,
-                categoria: 'Productos',
-                imagen: '/imagenes/pomada modeladora.jpe'
+        // MIGRACIÓN DE ROLES: Asegurar que no existan roles 'User', cambiarlos a 'Cliente'
+        let usuarios = this.obtener('usuarios') || [];
+        let huboCambios = false;
+
+        usuarios = usuarios.map(u => {
+            if (u.rol === 'User') {
+                huboCambios = true;
+                return { ...u, rol: 'Cliente' };
             }
-        ];
-        this.guardar('productos', productosIniciales);
+            return u;
+        });
+
+        if (huboCambios) {
+            this.guardar('usuarios', usuarios);
+        }
 
         if (!this.obtener('usuarios')) {
             const usuariosIniciales = [

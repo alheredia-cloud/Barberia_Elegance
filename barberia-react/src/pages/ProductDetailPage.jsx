@@ -2,19 +2,19 @@ import React, { useState, useEffect } from 'react';
 import { Container, Row, Col, Card, Button, Badge } from 'react-bootstrap';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useCart } from '../hooks/CartContext';
-import storageService from '../services/storage.service';
+import { useProducts } from '../hooks/ProductContext';
 
 const ProductDetailPage = () => {
     const { id } = useParams();
     const { addToCart } = useCart();
+    const { products } = useProducts();
     const navigate = useNavigate();
     const [product, setProduct] = useState(null);
 
     useEffect(() => {
-        const allProducts = storageService.obtener('productos') || [];
-        const foundProduct = allProducts.find(p => p.id === parseInt(id));
+        const foundProduct = products.find(p => p.id === parseInt(id));
         setProduct(foundProduct);
-    }, [id]);
+    }, [id, products]);
 
     if (!product) {
         return (

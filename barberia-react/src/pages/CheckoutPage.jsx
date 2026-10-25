@@ -167,10 +167,6 @@ const CheckoutPage = () => {
                             <h5 className="fw-bold">Total a Pagar:</h5>
                             <h5 className="fw-bold text-warning">${getTotal().toFixed(2)}</h5>
                         </div>
-                        <div className="alert alert-info py-2 small">
-                            <i className="bi bi-info-circle me-2"></i>
-                            Al confirmar, se descontará el stock de nuestros servicios.
-                        </div>
                     </Card>
                 </Col>
             </Row>

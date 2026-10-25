@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './hooks/AuthContext';
 import { CartProvider } from './hooks/CartContext';
+import { ProductProvider } from './hooks/ProductContext';
 import AppNavbar from './components/Navbar';
 import AppFooter from './components/Footer';
 import HomePage from './pages/HomePage';
@@ -27,8 +28,9 @@ function App() {
 
     return (
         <AuthProvider>
-            <CartProvider>
-                <Router>
+            <ProductProvider>
+                <CartProvider>
+                    <Router>
                     <div className="d-flex flex-column min-vh-100">
                         <AppNavbar />
                         <main className="flex-grow-1">
@@ -59,7 +61,8 @@ function App() {
                     </div>
                 </Router>
             </CartProvider>
-        </AuthProvider>
+        </ProductProvider>
+    </AuthProvider>
     );
 }
 

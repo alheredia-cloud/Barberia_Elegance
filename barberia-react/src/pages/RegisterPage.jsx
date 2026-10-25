@@ -90,7 +90,7 @@ const RegisterPage = () => {
                                 />
                             </Form.Group>
                             <Row>
-                                <Col md={6} className="mb-3">
+                                <Col md={12} className="mb-3">
                                     <Form.Group>
                                         <Form.Label>RUT (Sin puntos ni guiones)</Form.Label>
                                         <Form.Control
@@ -100,15 +100,6 @@ const RegisterPage = () => {
                                             required
                                             onChange={handleInputChange}
                                         />
-                                    </Form.Group>
-                                </Col>
-                                <Col md={6} className="mb-3">
-                                    <Form.Group>
-                                        <Form.Label>Rol</Form.Label>
-                                        <Form.Select name="rol" onChange={handleInputChange}>
-                                            <option value="Cliente">Cliente</option>
-                                            <option value="Seller">Vendedor</option>
-                                        </Form.Select>
                                     </Form.Group>
                                 </Col>
                             </Row>

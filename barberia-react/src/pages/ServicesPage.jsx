@@ -1,18 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { Container, Row, Col, Button } from 'react-bootstrap';
 import ProductCard from '../components/ProductCard';
-import storageService from '../services/storage.service';
+import { useProducts } from '../hooks/ProductContext';
 
 const ServicesPage = () => {
-    const [products, setProducts] = useState([]);
+    const { products } = useProducts();
     const [filter, setFilter] = useState('Todos');
 
-    useEffect(() => {
-        // FUERZA LA CARGA DE DATOS ACTUALIZADOS PARA ASEGURAR LAS IMÁGENES
-        storageService.inicializarDatos();
-        const allProducts = storageService.obtener('productos') || [];
-        setProducts(allProducts);
-    }, []);
+    // Ya no necesitamos el useEffect que cargaba productos del storageService,
+    // ya que el ProductContext se encarga de ello globalmente.
 
     const filteredProducts = filter === 'Todos'
         ? products

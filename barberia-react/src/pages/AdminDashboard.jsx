@@ -31,18 +31,27 @@ const AdminDashboard = () => {
 
     const navigate = useNavigate();
 
+    const [appointments, setAppointments] = useState([]);
+
     useEffect(() => {
         updateStats();
         if (activeTab === 'products') loadProducts();
         if (activeTab === 'messages') loadMessages();
         if (activeTab === 'users') loadUsers();
+        if (activeTab === 'appointments') loadAppointments();
     }, [activeTab]);
 
     const updateStats = () => {
         const usersList = storageService.obtener('usuarios') || [];
         const productsList = storageService.obtener('productos') || [];
         const messagesList = storageService.obtener('mensajes') || [];
-        const totalInventoryValue = productsList.reduce((acc, p) => acc + (p.precio * p.stock), 0);
+
+        // Calcular valor de inventario solo para productos físicos
+        const totalInventoryValue = productsList.reduce((acc, p) => {
+            return p.categoria === 'Productos' && typeof p.stock === 'number'
+                ? acc + (p.precio * p.stock)
+                : acc;
+        }, 0);
 
         setStats({
             users: usersList.length,
@@ -55,6 +64,13 @@ const AdminDashboard = () => {
     const loadProducts = () => setProducts(productsContext);
     const loadMessages = () => setMessages(storageService.obtener('mensajes') || []);
     const loadUsers = () => setUsers(storageService.obtener('usuarios') || []);
+
+    const loadAppointments = () => {
+        console.log("Intentando cargar citas...");
+        const citas = storageService.obtenerCitas();
+        console.log("Citas obtenidas:", citas);
+        setAppointments(citas);
+    };
 
     const filteredUsers = users.filter(u => {
         const matchesSearch = u.email.toLowerCase().includes(userSearch.toLowerCase()) ||
@@ -71,10 +87,14 @@ const AdminDashboard = () => {
     const handleSaveProduct = (e) => {
         e.preventDefault();
         const updatedProducts = [...products];
+
+        // Si la categoría es Cortes, Barba o Combos, el stock es 'Ilimitado'
+        const isUnlimited = ['Cortes', 'Barba', 'Combos'].includes(currentProduct.categoria);
+
         const productData = {
             ...currentProduct,
             precio: Number(currentProduct.precio),
-            stock: Number(currentProduct.stock)
+            stock: isUnlimited ? 'Ilimitado' : Number(currentProduct.stock)
         };
 
         if (productData.id) {
@@ -164,6 +184,12 @@ const AdminDashboard = () => {
                                     className={`py-3 px-3 mb-1 rounded text-white transition-all ${activeTab === 'products' ? 'bg-warning text-dark fw-bold' : 'hover-bg-secondary'}`}
                                 >
                                     📦 Productos
+                                </Nav.Link>
+                                <Nav.Link
+                                    onClick={() => setActiveTab('appointments')}
+                                    className={`py-3 px-3 mb-1 rounded text-white transition-all ${activeTab === 'appointments' ? 'bg-warning text-dark fw-bold' : 'hover-bg-secondary'}`}
+                                >
+                                    📅 Agenda
                                 </Nav.Link>
                                 <Nav.Link
                                     onClick={() => setActiveTab('messages')}
@@ -326,53 +352,43 @@ const AdminDashboard = () => {
                         </div>
                     )}
 
-                    {activeTab === 'users' && (
+                    {activeTab === 'appointments' && (
                         <div className="bg-white p-4 rounded shadow-sm border">
                             <div className="d-flex justify-content-between align-items-center mb-4">
-                                <h3 className="fw-bold mb-0">👥 Gestión de Usuarios Registrados</h3>
-                                <div className="d-flex gap-2">
-                                    <Form.Control
-                                        type="text"
-                                        placeholder="Buscar por email o RUT..."
-                                        className="me-2"
-                                        style={{ width: '250px' }}
-                                        value={userSearch}
-                                        onChange={(e) => setUserSearch(e.target.value)}
-                                    />
-                                    <Form.Select
-                                        style={{ width: '150px' }}
-                                        value={userRoleFilter}
-                                        onChange={(e) => setUserRoleFilter(e.target.value)}
-                                    >
-                                        <option value="Todos">Todos los roles</option>
-                                        <option value="Cliente">Cliente</option>
-                                        <option value="Administrator">Administrador</option>
-                                    </Form.Select>
-                                </div>
+                                <h3 className="fw-bold mb-0">📅 Agenda de Citas</h3>
+                                <Button variant="outline-danger" size="sm" onClick={() => {
+                                    if(window.confirm('¿Vaciar toda la agenda?')) {
+                                        storageService.guardar('citas_agenda', []);
+                                        setAppointments([]);
+                                    }
+                                }}>Limpiar Agenda</Button>
                             </div>
                             <Table responsive hover className="align-middle">
                                 <thead className="table-light">
                                     <tr>
-                                        <th>RUT</th>
-                                        <th>Email</th>
-                                        <th>Rol</th>
-                                        <th className="text-center">Acciones</th>
+                                        <th>Cliente</th>
+                                        <th>Fecha</th>
+                                        <th>Hora</th>
+                                        <th>Servicios</th>
+                                        <th>Notas</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {filteredUsers.length > 0 ? filteredUsers.map((u) => (
-                                        <tr key={u.email}>
-                                            <td>{u.rut}</td>
-                                            <td className="fw-bold">{u.email}</td>
-                                            <td><span className={`badge ${u.rol === 'Administrator' ? 'bg-info' : 'bg-secondary'}`}>{u.rol}</span></td>
-                                            <td className="text-center">
-                                                <Button variant="outline-primary" size="sm" className="me-2" onClick={() => handleOpenUserModal(u)}>Editar Rol</Button>
-                                                <Button variant="outline-danger" size="sm" onClick={() => handleDeleteUser(u.email)}>Eliminar</Button>
+                                    {appointments.length > 0 ? appointments.map((cita, index) => (
+                                        <tr key={index}>
+                                            <td className="fw-bold">{cita.cliente}</td>
+                                            <td>{cita.fecha}</td>
+                                            <td>{cita.hora}</td>
+                                            <td>
+                                                {cita.servicios.map((s, i) => (
+                                                    <span key={i} className="badge bg-info text-dark me-1">{s}</span>
+                                                ))}
                                             </td>
+                                            <td className="small">{cita.notas || '-'}</td>
                                         </tr>
                                     )) : (
                                         <tr>
-                                            <td colSpan="4" className="text-center py-4 text-muted">No se encontraron usuarios que coincidan con la búsqueda.</td>
+                                            <td colSpan="5" className="text-center py-4 text-muted">No hay citas agendadas actualmente.</td>
                                         </tr>
                                     )}
                                 </tbody>
@@ -456,12 +472,13 @@ const AdminDashboard = () => {
                             </Col>
                             <Col md={6}>
                                 <Form.Group className="mb-3">
-                                    <Form.Label>Stock Inicial</Form.Label>
+                                    <Form.Label>Stock Inicial {currentProduct.categoria !== 'Productos' && '(Solo para Productos)'}</Form.Label>
                                     <Form.Control
-                                        type="number"
-                                        required
-                                        value={currentProduct.stock}
+                                        type={currentProduct.categoria === 'Productos' ? 'number' : 'text'}
+                                        required={currentProduct.categoria === 'Productos'}
+                                        value={currentProduct.categoria === 'Productos' ? currentProduct.stock : 'Ilimitado'}
                                         onChange={(e) => setCurrentProduct({...currentProduct, stock: e.target.value})}
+                                        disabled={currentProduct.categoria !== 'Productos'}
                                     />
                                 </Form.Group>
                             </Col>

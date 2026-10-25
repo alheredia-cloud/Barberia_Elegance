@@ -13,6 +13,7 @@ import PurchaseSuccessPage from './pages/PurchaseSuccessPage';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import ProductDetailPage from './pages/ProductDetailPage';
+import AppointmentPage from './pages/AppointmentPage';
 import AboutPage from './pages/AboutPage';
 import ContactPage from './pages/ContactPage';
 import BlogPage from './pages/BlogPage';
@@ -38,6 +39,7 @@ function App() {
                                 <Route path="/" element={<HomePage />} />
                                 <Route path="/servicios" element={<ServicesPage />} />
                                 <Route path="/producto/:id" element={<ProductDetailPage />} />
+                                <Route path="/agendar" element={<AppointmentPage />} />
                                 <Route path="/carrito" element={<CartPage />} />
                                 <Route path="/checkout" element={<CheckoutPage />} />
                                 <Route path="/compra-exitosa" element={<PurchaseSuccessPage />} />

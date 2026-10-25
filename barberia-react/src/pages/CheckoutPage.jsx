@@ -51,10 +51,18 @@ const CheckoutPage = () => {
                 };
                 storageService.guardarSimple('ultimo_recibo', JSON.stringify(recibo));
 
+                // DETERMINAR DESTINO ANTES DE LIMPIAR EL CARRITO
+                const tieneServicios = cart.some(item => item.categoria !== 'Productos');
+
                 // Limpiar carrito y finalizar
                 clearCart();
                 setIsProcessing(false);
-                navigate('/compra-exitosa');
+
+                if (tieneServicios) {
+                    navigate('/agendar');
+                } else {
+                    navigate('/compra-exitosa');
+                }
             } catch (error) {
                 console.error("Error al procesar el pago:", error);
                 setIsProcessing(false);

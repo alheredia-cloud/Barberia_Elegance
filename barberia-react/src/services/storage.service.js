@@ -66,7 +66,7 @@ const storageService = {
                     stock: 'Ilimitado',
                     categoria: 'Combos',
                     descripcion: 'Incluye: 1. Pulido de la barba a elección, 2. Corte de cabello incluido y masajes faciales.',
-                    imagen: '/imagenes/afeitadi imperial.jpg'
+                    imagen: '/imagenes/afeitado imperial.jpg'
                 },
                 {
                     id: 104,

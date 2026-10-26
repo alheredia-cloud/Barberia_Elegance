@@ -395,6 +395,66 @@ const AdminDashboard = () => {
                             </Table>
                         </div>
                     )}
+
+                    {activeTab === 'users' && (
+                        <div className="bg-white p-4 rounded shadow-sm border">
+                            <div className="d-flex justify-content-between align-items-center mb-4">
+                                <h3 className="fw-bold mb-0">👥 Gestión de Usuarios</h3>
+                                <Button variant="warning" className="fw-bold" onClick={() => handleOpenUserModal()}>
+                                    + Nuevo Usuario
+                                </Button>
+                            </div>
+
+                            <Row className="g-3 mb-4">
+                                <Col md={8}>
+                                    <Form.Control
+                                        type="text"
+                                        placeholder="Buscar por Email o RUT..."
+                                        value={userSearch}
+                                        onChange={(e) => setUserSearch(e.target.value)}
+                                    />
+                                </Col>
+                                <Col md={4}>
+                                    <Form.Select
+                                        value={userRoleFilter}
+                                        onChange={(e) => setUserRoleFilter(e.target.value)}
+                                    >
+                                        <option value="Todos">Todos los Roles</option>
+                                        <option value="Cliente">Cliente</option>
+                                        <option value="Administrator">Administrador</option>
+                                    </Form.Select>
+                                </Col>
+                            </Row>
+
+                            <Table responsive hover className="align-middle">
+                                <thead className="table-light">
+                                    <tr>
+                                        <th>Email</th>
+                                        <th>RUT</th>
+                                        <th>Rol</th>
+                                        <th className="text-center">Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {filteredUsers.length > 0 ? filteredUsers.map((u, index) => (
+                                        <tr key={index}>
+                                            <td className="fw-bold">{u.email}</td>
+                                            <td>{u.rut}</td>
+                                            <td><span className={`badge ${u.rol === 'Administrator' ? 'bg-danger' : 'bg-secondary'}`}>{u.rol}</span></td>
+                                            <td className="text-center">
+                                                <Button variant="outline-primary" size="sm" className="me-2" onClick={() => handleOpenUserModal(u)}>Editar</Button>
+                                                <Button variant="outline-danger" size="sm" onClick={() => handleDeleteUser(u.email)}>Eliminar</Button>
+                                            </td>
+                                        </tr>
+                                    )) : (
+                                        <tr>
+                                            <td colSpan="4" className="text-center py-4 text-muted">No se encontraron usuarios con los criterios seleccionados.</td>
+                                        </tr>
+                                    )}
+                                </tbody>
+                            </Table>
+                        </div>
+                    )}
                 </Col>
             </Row>
 

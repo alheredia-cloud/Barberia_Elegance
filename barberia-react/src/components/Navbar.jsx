@@ -35,15 +35,15 @@ const AppNavbar = () => {
 
                 <Navbar.Collapse id="basic-navbar-nav">
                     <Nav className="ms-auto align-items-center">
-                        <Nav.Link as={NavLink} to="/" end className="px-3">Inicio</Nav.Link>
-                        <Nav.Link as={NavLink} to="/servicios" className="px-3">Servicios</Nav.Link>
-                        <Nav.Link as={NavLink} to="/nosotros" className="px-3">Nosotros</Nav.Link>
-                        <Nav.Link as={NavLink} to="/blog" className="px-3">Blog</Nav.Link>
-                        <Nav.Link as={NavLink} to="/contacto" className="px-3">Contacto</Nav.Link>
+                        <Nav.Link as={NavLink} to="/" end className="px-2">Inicio</Nav.Link>
+                        <Nav.Link as={NavLink} to="/servicios" className="px-2">Servicios</Nav.Link>
+                        <Nav.Link as={NavLink} to="/nosotros" className="px-2">Nosotros</Nav.Link>
+                        <Nav.Link as={NavLink} to="/blog" className="px-2">Blog</Nav.Link>
+                        <Nav.Link as={NavLink} to="/contacto" className="px-2">Contacto</Nav.Link>
 
                         {/* El personal interno no compra: el carrito solo se muestra a clientes y visitantes */}
                         {!esPersonal && (
-                            <Nav.Link as={NavLink} to="/carrito" className="px-3 position-relative">
+                            <Nav.Link as={NavLink} to="/carrito" className="px-2 position-relative">
                                 🛒 Carrito
                                 {cartCount > 0 && (
                                     <Badge pill bg="warning" text="dark" className="position-absolute top-0 start-100 translate-middle">
@@ -54,10 +54,10 @@ const AppNavbar = () => {
                         )}
 
                         {hasRole('ADMIN') && (
-                            <Nav.Link as={NavLink} to="/admin" className="px-3 text-info fw-bold">Panel Admin</Nav.Link>
+                            <Nav.Link as={NavLink} to="/admin" className="px-2 text-info fw-bold">Panel Admin</Nav.Link>
                         )}
                         {hasRole('VENDEDOR') && (
-                            <Nav.Link as={NavLink} to="/admin" className="px-3 text-info fw-bold">Panel Vendedor</Nav.Link>
+                            <Nav.Link as={NavLink} to="/admin" className="px-2 text-info fw-bold">Panel Vendedor</Nav.Link>
                         )}
 
                         {isAuthenticated ? (

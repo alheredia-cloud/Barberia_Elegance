@@ -77,12 +77,12 @@ const UsuariosPanel = () => {
                     {filtrados.length ? filtrados.map((u) => (
                         <tr key={u.id}>
                             <td className="fw-bold">{u.nombre}</td>
-                            <td>{u.email}</td>
-                            <td>{u.rut}</td>
+                            <td className="small">{u.email}</td>
+                            <td className="text-nowrap small">{u.rut}</td>
                             <td><Badge bg={COLOR_ROL[u.rol]}>{NOMBRE_ROL[u.rol]}</Badge></td>
                             <td><Badge bg={u.activo ? 'success' : 'dark'}>{u.activo ? 'Activo' : 'Deshabilitado'}</Badge></td>
                             <td className="text-center text-nowrap">
-                                <Button variant="outline-primary" size="sm" className="me-2"
+                                <Button variant="outline-primary" size="sm" className="me-1"
                                     onClick={() => { setFormError(''); setForm({ ...u, password: '' }); }}>Editar</Button>
                                 <Button variant="outline-danger" size="sm" disabled={u.email === user.email}
                                     onClick={() => eliminar(u)}>Eliminar</Button>

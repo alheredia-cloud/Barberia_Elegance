@@ -1,33 +1,38 @@
 import React, { useState } from 'react';
 import { Container, Row, Col, Card, Form, Button, Alert } from 'react-bootstrap';
 import { useAuth } from '../hooks/AuthContext';
-import { useNavigate } from 'react-router-dom';
-import storageService from '../services/storage.service';
+import { Link, Navigate, useLocation, useNavigate } from 'react-router-dom';
+import { getErrorMessage } from '../services/api';
 
 const LoginPage = () => {
-    const { login } = useAuth();
+    const { login, user, isAuthenticated, sessionMessage } = useAuth();
     const navigate = useNavigate();
+    const location = useLocation();
+    const [loading, setLoading] = useState(false);
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
 
-    const handleLogin = (e) => {
+    /** Personal interno va al panel; el cliente vuelve a la página que intentaba abrir. */
+    const destino = (rol) =>
+        rol === 'ADMIN' || rol === 'VENDEDOR' ? '/admin' : location.state?.from || '/';
+
+    // Si ya hay sesión activa no tiene sentido mostrar el formulario
+    if (isAuthenticated) {
+        return <Navigate to={destino(user.rol)} replace />;
+    }
+
+    /** POST /api/v1/auth/login -> el backend valida la contraseña (BCrypt) y devuelve los JWT. */
+    const handleLogin = async (e) => {
         e.preventDefault();
         setError('');
-
-        // Lógica migrada de auth.js Vanilla
-        const usuarios = storageService.obtener('usuarios') || [];
-        const usuarioEncontrado = usuarios.find(u => u.email === email && u.password === password);
-
-        if (usuarioEncontrado) {
-            login(usuarioEncontrado.email, usuarioEncontrado.rol);
-            if (usuarioEncontrado.rol === 'Administrator' || usuarioEncontrado.rol === 'Seller') {
-                navigate('/admin');
-            } else {
-                navigate('/');
-            }
-        } else {
-            setError('Correo o contraseña incorrectos');
+        setLoading(true);
+        try {
+            const usuario = await login(email.trim(), password);
+            navigate(destino(usuario.rol), { replace: true });
+        } catch (err) {
+            setError(getErrorMessage(err, 'Correo o contraseña incorrectos'));
+            setLoading(false);
         }
     };
 
@@ -61,13 +66,17 @@ const LoginPage = () => {
                                     required
                                 />
                             </Form.Group>
+                            {!error && sessionMessage && <Alert variant="warning" className="py-2 small">{sessionMessage}</Alert>}
+                            {!error && !sessionMessage && location.state?.from && (
+                                <Alert variant="info" className="py-2 small">Inicia sesión para continuar.</Alert>
+                            )}
                             {error && <Alert variant="danger" className="py-2 small">{error}</Alert>}
-                            <Button variant="dark" type="submit" className="w-100 fw-bold py-2 border-warning border-2">
-                                Acceder
+                            <Button variant="dark" type="submit" disabled={loading} className="w-100 fw-bold py-2 border-warning border-2">
+                                {loading ? 'Verificando...' : 'Acceder'}
                             </Button>
                         </Form>
                         <div className="mt-4 text-secondary small">
-                            ¿No tienes cuenta? <a href="/registro" className="text-warning fw-bold text-decoration-none">Regístrate aquí</a>
+                            ¿No tienes cuenta? <Link to="/registro" state={location.state} className="text-warning fw-bold text-decoration-none">Regístrate aquí</Link>
                         </div>
                     </Card>
                 </Col>

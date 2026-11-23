@@ -1,16 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { Container, Row, Col, Button } from 'react-bootstrap';
 import ProductCard from '../components/ProductCard';
-import storageService from '../services/storage.service';
+import { useProducts } from '../hooks/ProductContext';
 
 const HomePage = () => {
-    const [featuredProducts, setFeaturedProducts] = useState([]);
-
-    useEffect(() => {
-        const allProducts = storageService.obtener('productos') || [];
-        // Tomamos los primeros 3 como destacados
-        setFeaturedProducts(allProducts.slice(0, 3));
-    }, []);
+    const { products } = useProducts();
+    // Tomamos los primeros 3 como destacados
+    const featuredProducts = products.slice(0, 3);
 
     return (
         <div className="home-page">

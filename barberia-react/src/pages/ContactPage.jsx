@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Container, Row, Col, Form, Button, Card, Alert } from 'react-bootstrap';
-import storageService from '../services/storage.service';
+import { mensajesApi } from '../services/barberia.api';
+import { getErrorMessage } from '../services/api';
 
 const ContactPage = () => {
     const [formData, setFormData] = useState({
@@ -9,12 +10,13 @@ const ContactPage = () => {
         mensaje: ''
     });
     const [status, setStatus] = useState({ type: '', message: '' });
+    const [enviando, setEnviando] = useState(false);
 
     const handleInputChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
 
         if (!formData.nombre || !formData.email || !formData.mensaje) {
@@ -32,11 +34,17 @@ const ContactPage = () => {
             return;
         }
 
-        // MIGRACIÓN VANILLA: Guardar mensaje en el localStorage vía storageService
-        storageService.guardarMensaje(formData);
-
-        setStatus({ type: 'success', message: '¡Mensaje enviado con éxito! Nos pondremos en contacto contigo pronto.' });
-        setFormData({ nombre: '', email: '', mensaje: '' });
+        // POST /api/v1/mensajes (endpoint público)
+        setEnviando(true);
+        try {
+            await mensajesApi.enviar(formData);
+            setStatus({ type: 'success', message: '¡Mensaje enviado con éxito! Nos pondremos en contacto contigo pronto.' });
+            setFormData({ nombre: '', email: '', mensaje: '' });
+        } catch (err) {
+            setStatus({ type: 'danger', message: getErrorMessage(err, 'No se pudo enviar el mensaje') });
+        } finally {
+            setEnviando(false);
+        }
     };
 
     return (
@@ -89,8 +97,8 @@ const ContactPage = () => {
                                     {status.message}
                                 </Alert>
                             )}
-                            <Button variant="dark" type="submit" className="w-100 fw-bold py-2 border-warning border-2">
-                                Enviar Mensaje
+                            <Button variant="dark" type="submit" disabled={enviando} className="w-100 fw-bold py-2 border-warning border-2">
+                                {enviando ? 'Enviando...' : 'Enviar Mensaje'}
                             </Button>
                         </Form>
                     </Card>

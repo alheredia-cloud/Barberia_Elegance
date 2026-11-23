@@ -1,62 +1,58 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
-import storageService from '../services/storage.service';
+import React, { createContext, useContext, useEffect, useState } from 'react';
 
-const CartContext = createContext();
+const CartContext = createContext(null);
+const CART_KEY = 'cart';
+
+/** El carrito es estado del cliente: se guarda en localStorage hasta confirmar la compra en el backend. */
+const leerCarrito = () => {
+    try {
+        return JSON.parse(localStorage.getItem(CART_KEY)) || [];
+    } catch {
+        return [];
+    }
+};
 
 export const CartProvider = ({ children }) => {
-    const [cart, setCart] = useState([]);
+    const [cart, setCart] = useState(leerCarrito);
 
     useEffect(() => {
-        const savedCart = storageService.obtener('carrito');
-        if (savedCart) {
-            setCart(savedCart);
+        try {
+            localStorage.setItem(CART_KEY, JSON.stringify(cart));
+        } catch {
+            /* almacenamiento no disponible */
         }
-    }, []);
+    }, [cart]);
 
     const addToCart = (product) => {
-        const currentCart = storageService.obtener('carrito') || [];
-        const index = currentCart.findIndex(item => item.id === product.id);
-
-        let newCart;
-        if (index !== -1) {
-            newCart = [...currentCart];
-            newCart[index].cantidad += 1;
-        } else {
-            newCart = [...currentCart, { ...product, cantidad: 1 }];
-        }
-
-        storageService.guardar('carrito', newCart);
-        setCart(newCart);
+        setCart((actual) => {
+            const existe = actual.find((item) => item.id === product.id);
+            if (existe) {
+                // No permite superar el stock disponible de productos físicos
+                if (!product.esServicio && typeof product.stock === 'number' && existe.cantidad >= product.stock) {
+                    return actual;
+                }
+                return actual.map((item) => (item.id === product.id ? { ...item, cantidad: item.cantidad + 1 } : item));
+            }
+            return [...actual, { ...product, cantidad: 1 }];
+        });
     };
 
-    const removeFromCart = (productId) => {
-        const currentCart = storageService.obtener('carrito') || [];
-        const newCart = currentCart.filter(item => item.id !== productId);
-
-        storageService.guardar('carrito', newCart);
-        setCart(newCart);
-    };
+    const removeFromCart = (productId) => setCart((actual) => actual.filter((item) => item.id !== productId));
 
     const updateQuantity = (productId, amount) => {
-        const currentCart = storageService.obtener('carrito') || [];
-        const index = currentCart.findIndex(item => item.id === productId);
-
-        if (index !== -1) {
-            const newCart = [...currentCart];
-            newCart[index].cantidad = Math.max(1, newCart[index].cantidad + amount);
-            storageService.guardar('carrito', newCart);
-            setCart(newCart);
-        }
+        setCart((actual) =>
+            actual.map((item) => {
+                if (item.id !== productId) return item;
+                let cantidad = Math.max(1, item.cantidad + amount);
+                if (!item.esServicio && typeof item.stock === 'number') cantidad = Math.min(cantidad, item.stock);
+                return { ...item, cantidad };
+            })
+        );
     };
 
-    const clearCart = () => {
-        storageService.guardar('carrito', []);
-        setCart([]);
-    };
+    const clearCart = () => setCart([]);
 
-    const getTotal = () => {
-        return cart.reduce((total, item) => total + (item.precio * item.cantidad), 0);
-    };
+    const getTotal = () => cart.reduce((total, item) => total + item.precio * item.cantidad, 0);
 
     return (
         <CartContext.Provider value={{ cart, addToCart, removeFromCart, updateQuantity, clearCart, getTotal }}>

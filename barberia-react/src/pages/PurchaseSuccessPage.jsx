@@ -1,13 +1,33 @@
-import React from 'react';
-import { Container, Card, Button, Row, Col } from 'react-bootstrap';
+import React, { useEffect, useState } from 'react';
+import { Container, Card, Button, Row, Col, Spinner } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
-import storageService from '../services/storage.service';
+import { boletasApi } from '../services/barberia.api';
+import { formatCLP, formatFecha } from '../utils/formato';
+import { ULTIMA_BOLETA_KEY } from './CheckoutPage';
 
+/** Comprobante: muestra la boleta registrada en el backend (GET /api/v1/boletas/{id}). */
 const PurchaseSuccessPage = () => {
     const navigate = useNavigate();
-    const recibo = JSON.parse(storageService.obtenerSimple('ultimo_recibo') || '{}');
+    const [recibo, setRecibo] = useState(null);
+    const [loading, setLoading] = useState(true);
 
-    if (!recibo.id) {
+    useEffect(() => {
+        const id = sessionStorage.getItem(ULTIMA_BOLETA_KEY);
+        if (!id) {
+            setLoading(false);
+            return;
+        }
+        boletasApi.obtener(id)
+            .then(setRecibo)
+            .catch(() => setRecibo(null))
+            .finally(() => setLoading(false));
+    }, []);
+
+    if (loading) {
+        return <Container className="py-5 text-center"><Spinner animation="border" variant="warning" /></Container>;
+    }
+
+    if (!recibo) {
         return (
             <Container className="py-5 text-center">
                 <h2 className="fw-bold">No se encontró un recibo reciente</h2>
@@ -35,43 +55,37 @@ const PurchaseSuccessPage = () => {
                             <div className="mb-4 p-3 bg-white rounded-3 border shadow-sm">
                                 <Row className="gy-2">
                                     <Col xs={6} className="text-secondary small">Cliente:</Col>
-                                    <Col xs={6} className="text-end fw-bold">{recibo.cliente || 'Cliente General'}</Col>
+                                    <Col xs={6} className="text-end fw-bold">{recibo.nombreCliente}</Col>
                                     <Col xs={6} className="text-secondary small">Fecha:</Col>
-                                    <Col xs={6} className="text-end fw-bold">{recibo.fecha}</Col>
-                                    <Col xs={6} className="text-secondary small">ID Transacción:</Col>
-                                    <Col xs={6} className="text-end fw-bold">#{recibo.id.toString().slice(-6)}</Col>
+                                    <Col xs={6} className="text-end fw-bold">{formatFecha(recibo.fecha)}</Col>
+                                    <Col xs={6} className="text-secondary small">N° Boleta:</Col>
+                                    <Col xs={6} className="text-end fw-bold">#{recibo.id}</Col>
+                                    <Col xs={6} className="text-secondary small">Método de pago:</Col>
+                                    <Col xs={6} className="text-end fw-bold text-capitalize">{recibo.metodoPago}</Col>
                                 </Row>
                             </div>
 
-                            <h6 className="fw-bold text-uppercase mb-3">Detalle de Servicios:</h6>
+                            <h6 className="fw-bold text-uppercase mb-3">Detalle:</h6>
                             <div className="mb-4">
-                                {recibo.productos && recibo.productos.map((item, index) => (
-                                    <div key={index} className="d-flex justify-content-between mb-2 border-bottom pb-1 small">
-                                        <span>{item.nombre} x{item.cantidad}</span>
-                                        <span className="fw-bold">${(item.precio * item.cantidad).toFixed(2)}</span>
+                                {recibo.detalles.map((item) => (
+                                    <div key={item.id} className="d-flex justify-content-between mb-2 border-bottom pb-1 small">
+                                        <span>{item.producto} x{item.cantidad}</span>
+                                        <span className="fw-bold">{formatCLP(item.subtotal)}</span>
                                     </div>
                                 ))}
                             </div>
 
                             <div className="d-flex justify-content-between align-items-center p-3 bg-dark text-light rounded-3 shadow">
                                 <h5 className="mb-0 fw-bold text-warning">TOTAL PAGADO:</h5>
-                                <h4 className="mb-0 fw-bold text-warning">${recibo.total?.toFixed(2)}</h4>
+                                <h4 className="mb-0 fw-bold text-warning">{formatCLP(recibo.total)}</h4>
                             </div>
 
                             <div className="text-center mt-5">
-                                <Button
-                                    variant="outline-dark"
-                                    className="w-100 fw-bold py-2"
-                                    onClick={() => window.print()}
-                                >
+                                <Button variant="outline-dark" className="w-100 fw-bold py-2" onClick={() => window.print()}>
                                     Imprimir Recibo 🖨️
                                 </Button>
-                                <Button
-                                    variant="dark"
-                                    className="w-100 fw-bold py-2 mt-3 border-warning border-2"
-                                    onClick={() => navigate('/')}
-                                >
-                                    Volver al Inicio
+                                <Button variant="dark" className="w-100 fw-bold py-2 mt-3 border-warning border-2" onClick={() => navigate('/mis-compras')}>
+                                    Ver mis compras
                                 </Button>
                             </div>
                         </Card.Body>

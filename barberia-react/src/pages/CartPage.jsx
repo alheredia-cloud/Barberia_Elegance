@@ -1,11 +1,14 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Container, Table, Button, Card, Row, Col } from 'react-bootstrap';
 import { useCart } from '../hooks/CartContext';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../hooks/AuthContext';
+import { formatCLP } from '../utils/formato';
 
 const CartPage = () => {
     const { cart, removeFromCart, updateQuantity, getTotal, clearCart } = useCart();
     const navigate = useNavigate();
+    const { isAuthenticated } = useAuth();
 
     if (cart.length === 0) {
         return (
@@ -45,11 +48,12 @@ const CartPage = () => {
                                             <div className="d-flex justify-content-center align-items-center gap-2">
                                                 <Button variant="outline-dark" size="sm" onClick={() => updateQuantity(item.id, -1)}>-</Button>
                                                 <span className="fw-bold">{item.cantidad}</span>
-                                                <Button variant="outline-dark" size="sm" onClick={() => updateQuantity(item.id, 1)}>+</Button>
+                                                <Button variant="outline-dark" size="sm" onClick={() => updateQuantity(item.id, 1)}
+                                                    disabled={typeof item.stock === 'number' && item.cantidad >= item.stock}>+</Button>
                                             </div>
                                         </td>
-                                        <td className="text-center">${item.precio}</td>
-                                        <td className="text-center fw-bold">${(item.precio * item.cantidad).toFixed(2)}</td>
+                                        <td className="text-center">{formatCLP(item.precio)}</td>
+                                        <td className="text-center fw-bold">{formatCLP(item.precio * item.cantidad)}</td>
                                         <td className="text-center">
                                             <Button variant="danger" size="sm" onClick={() => removeFromCart(item.id)}>🗑️</Button>
                                         </td>
@@ -64,7 +68,7 @@ const CartPage = () => {
                         <h4 className="fw-bold mb-4 text-warning text-uppercase">Resumen de Compra</h4>
                         <div className="d-flex justify-content-between mb-3">
                             <span>Subtotal:</span>
-                            <span className="fw-bold">${getTotal().toFixed(2)}</span>
+                            <span className="fw-bold">{formatCLP(getTotal())}</span>
                         </div>
                         <div className="d-flex justify-content-between mb-3">
                             <span>Costo de Envío/Tasa:</span>
@@ -73,11 +77,11 @@ const CartPage = () => {
                         <hr className="bg-secondary" />
                         <div className="d-flex justify-content-between mb-4">
                             <h5 className="fw-bold">Total:</h5>
-                            <h5 className="fw-bold text-warning">${getTotal().toFixed(2)}</h5>
+                            <h5 className="fw-bold text-warning">{formatCLP(getTotal())}</h5>
                         </div>
                         <div className="d-grid gap-2">
                             <Button variant="warning" className="fw-bold py-3 text-dark" onClick={() => navigate('/checkout')}>
-                                Confirmar Pedido
+                                {isAuthenticated ? 'Confirmar Pedido' : 'Iniciar sesión para comprar'}
                             </Button>
                             <Button variant="outline-light" className="py-2" onClick={clearCart}>
                                 Vaciar Carrito

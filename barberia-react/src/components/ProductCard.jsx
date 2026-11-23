@@ -2,9 +2,13 @@ import React from 'react';
 import { Card, Button, Badge } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { useCart } from '../hooks/CartContext';
+import { useAuth } from '../hooks/AuthContext';
+import { formatCLP } from '../utils/formato';
 
 const ProductCard = ({ product }) => {
     const { addToCart } = useCart();
+    const { hasRole } = useAuth();
+    const esPersonal = hasRole('ADMIN', 'VENDEDOR');
 
     return (
         <Card className="h-100 border-0 shadow-sm card-producto transition-all">
@@ -30,23 +34,26 @@ const ProductCard = ({ product }) => {
                 </Card.Text>
 
                 <div className="mt-auto">
-                    <h4 className="text-dark fw-bold mb-3">${product.precio}</h4>
+                    <h4 className="text-dark fw-bold mb-3">{formatCLP(product.precio)}</h4>
                     <div className="d-flex gap-2">
                         <Button
                             variant="outline-dark"
                             className="flex-grow-1 fw-bold py-2"
-                            onClick={() => window.location.href = `/producto/${product.id}`}
+                            as={Link}
+                            to={`/producto/${product.id}`}
                         >
                             Detalle
                         </Button>
-                        <Button
-                            variant="dark"
-                            className="flex-grow-1 fw-bold py-2 border-warning border-2"
-                            onClick={() => addToCart(product)}
-                            disabled={product.stock === 0}
-                        >
-                            {product.stock === 0 ? 'Agotado' : 'Agregar'}
-                        </Button>
+                        {!esPersonal && (
+                            <Button
+                                variant="dark"
+                                className="flex-grow-1 fw-bold py-2 border-warning border-2"
+                                onClick={() => addToCart(product)}
+                                disabled={product.stock === 0}
+                            >
+                                {product.stock === 0 ? 'Agotado' : 'Agregar'}
+                            </Button>
+                        )}
                     </div>
                 </div>
             </Card.Body>

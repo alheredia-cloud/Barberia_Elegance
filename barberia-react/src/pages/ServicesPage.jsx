@@ -1,14 +1,11 @@
-import React, { useState, useEffect } from 'react';
-import { Container, Row, Col, Button } from 'react-bootstrap';
+import React, { useState } from 'react';
+import { Container, Row, Col, Button, Spinner, Alert } from 'react-bootstrap';
 import ProductCard from '../components/ProductCard';
 import { useProducts } from '../hooks/ProductContext';
 
 const ServicesPage = () => {
-    const { products } = useProducts();
+    const { products, loading, error } = useProducts();
     const [filter, setFilter] = useState('Todos');
-
-    // Ya no necesitamos el useEffect que cargaba productos del storageService,
-    // ya que el ProductContext se encarga de ello globalmente.
 
     const filteredProducts = filter === 'Todos'
         ? products
@@ -38,6 +35,9 @@ const ServicesPage = () => {
                 ))}
             </div>
 
+            {error && <Alert variant="danger" className="text-center">{error}</Alert>}
+            {loading && <div className="text-center py-4"><Spinner animation="border" variant="warning" /></div>}
+
             <Row className="g-4">
                 {filteredProducts.length > 0 ? (
                     filteredProducts.map(product => (
@@ -45,7 +45,7 @@ const ServicesPage = () => {
                             <ProductCard product={product} />
                         </Col>
                     ))
-                ) : (
+                ) : !loading && (
                     <div className="text-center py-5">
                         <p className="text-secondary">No hay servicios disponibles en esta categoría.</p>
                     </div>

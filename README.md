@@ -1,67 +1,61 @@
-# 💈 Barbería Elegance
+# 💈 Barbería Elegance — Frontend
 
-Una plataforma web integral y moderna diseñada para optimizar la gestión de servicios de barbería y la venta de productos especializados. El sistema combina una experiencia de usuario intuitiva para los clientes con un panel de control robusto para la administración del negocio.
+Plataforma web para la venta de servicios y productos de barbería, con agenda de horas y panel interno de gestión.
+El frontend (React) se comunica con una **API REST en Spring Boot** protegida con **JWT**.
 
-## 🚀 Características Principales
+- Backend: https://github.com/alheredia-cloud/Barberia_Elegance_Backend
 
-### 👤 Interfaz del Cliente
-- **Catálogo Interactivo:** Exploración de servicios (cortes, barba, combos) y productos físicos.
-- **Carrito de Compras Inteligente:** Gestión de productos con cálculo de totales en tiempo real.
-- **Agendamiento Vinculante:** Sistema obligatorio de reserva de fecha y hora al contratar servicios, asegurando la organización de la agenda.
-- **Autenticación Segura:** Módulo de registro e inicio de sesión con validaciones estrictas de RUT y correo electrónico.
+## 🚀 Características
 
-### 🛠️ Panel de Administración (AdminDashboard)
-- **Control de Acceso:** Rutas protegidas exclusivas para el rol de `Administrator`.
-- **Métricas en Tiempo Real (KPIs):** Monitoreo instantáneo de usuarios, productos, valor de inventario y mensajes.
-- **Gestión de Inventario (CRUD):** Control total sobre productos y servicios, con reglas de negocio diferenciadas (Stock Ilimitado para servicios y Control Numérico para productos).
-- **Administración de Usuarios:** Gestión de cuentas, cambio de roles y filtrado avanzado.
-- **Bandeja de Mensajes:** Centralización de la comunicación con los clientes.
-- **Agenda Centralizada:** Visualización detallada de todas las citas programadas.
+### 👤 Tienda (público / Cliente)
+- **Catálogo** de servicios y productos obtenido desde `GET /api/v1/productos`.
+- **Carrito** con control de stock disponible.
+- **Checkout** (`POST /api/v1/boletas`): el backend valida stock, toma precios desde la BD y calcula el total.
+- **Agenda** (`POST /api/v1/citas`): bloques de 30 min, horas ocupadas deshabilitadas.
+- **Registro e inicio de sesión** con validación de RUT (dígito verificador) y correo.
+- **Mis compras y citas**: historial del cliente.
 
-## 💻 Stack Tecnológico
+### 🛠️ Panel interno (`/admin`)
+| Sección | ADMIN | VENDEDOR |
+|---|:-:|:-:|
+| Dashboard (KPIs) | ✅ | — |
+| Productos | ✅ CRUD | 👁️ lista y detalle |
+| Categorías | ✅ CRUD | — |
+| Órdenes (boletas) | ✅ ver / anular | 👁️ lista y detalle |
+| Agenda | ✅ | — |
+| Mensajes | ✅ | — |
+| Usuarios y roles | ✅ | — |
 
-- **Frontend:** [React](https://react.dev/) + [Vite](https://vitejs.dev/)
-- **Estilos:** [Bootstrap 5](https://getbootstrap.com/)
-- **Gestión de Estado:** React Context API (Sincronización global inmediata entre Admin y Tienda).
-- **Persistencia:** LocalStorage mediante arquitectura de patrón Singleton (`storageService`).
-- **Pruebas Unitarias:** [Vitest](https://vitest.dev/) + JSDOM.
+Las secciones que un rol no puede usar **no se muestran**. El CLIENTE que intenta entrar a `/admin` es redirigido a `/no-autorizado`.
 
-## 📦 Instalación y Ejecución
+## 🔐 Sesión y seguridad
+- `src/services/api.js`: instancia **axios** que adjunta `Authorization: Bearer <token>` y, si recibe 401 por expiración, renueva el token con `/auth/refresh` y reintenta la petición.
+- `src/services/tokenStore.js`: el **access token** vive solo en memoria; el **refresh token** se guarda en `localStorage` para recuperar la sesión al recargar.
+- `src/hooks/AuthContext.jsx`: al recargar la página pide un token nuevo al backend y obtiene el usuario y su **rol desde el servidor** (no desde el almacenamiento). Cierra la sesión si el refresh token expiró y sincroniza el cierre entre pestañas.
+- `src/components/ProtectedRoute.jsx`: protege rutas por sesión y por rol.
 
-Sigue estos pasos para correr el proyecto localmente:
+## 💻 Stack
+React 19 + Vite · React Router · React-Bootstrap · Axios · Context API · Vitest + Testing Library
 
-1. **Clonar el repositorio:**
+## 📦 Ejecución
+1. Levantar el backend (ver su README) en `http://localhost:8080`.
+2. En `barberia-react/`:
    ```bash
-   git clone <url-del-repositorio>
-   cd barberia-react
-   ```
-
-2. **Instalar dependencias:**
-   ```bash
-   npm install
-   ```
-
-3. **Ejecutar en modo desarrollo:**
-   ```bash
+   npm install --legacy-peer-deps
    npm run dev
    ```
-   Luego, abre el navegador en la dirección que indique la terminal (usualmente `http://localhost:5173`).
+   Abrir `http://localhost:5173`.
+3. (Opcional) Otra URL de backend: copiar `.env.example` a `.env` y ajustar `VITE_API_URL`.
+4. Pruebas: `npm test`
 
-4. **Ejecutar las pruebas unitarias:**
-   ```bash
-   npm test
-   ```
-
-## 🔑 Credenciales de Acceso (Prueba)
-
-Para acceder al panel administrativo, utiliza la siguiente cuenta predefinida:
-- **Email:** `admin@gmail.com`
-- **Password:** `admin123`
-- **Rol:** `Administrator`
+## 🔑 Usuarios de prueba
+| Rol | Email | Clave |
+|---|---|---|
+| ADMIN | admin@barberia.cl | admin123 |
+| VENDEDOR | vendedor@barberia.cl | vendedor123 |
+| CLIENTE | cliente@barberia.cl | cliente123 |
 
 ## 👥 Integrantes
 - Bastian Canales
 - Ian Muñoz
 - Alexander Heredia
-
----
